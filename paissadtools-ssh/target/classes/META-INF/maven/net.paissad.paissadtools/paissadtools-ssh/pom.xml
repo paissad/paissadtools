@@ -1,0 +1,48 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <artifactId>paissadtools</artifactId>
+    <groupId>net.paissad.paissadtools</groupId>
+    <version>0.1</version>
+    <relativePath>..</relativePath>
+  </parent>
+  <artifactId>paissadtools-ssh</artifactId>
+  <description>Contains some utilities for using SSH.</description>
+
+  <dependencies>
+    <dependency>
+      <groupId>net.paissad.paissadtools</groupId>
+      <artifactId>paissadtools-api</artifactId>
+      <version>0.1</version>
+    </dependency>
+    <dependency>
+      <groupId>net.paissad.paissadtools</groupId>
+      <artifactId>paissadtools-utils</artifactId>
+      <version>0.1</version>
+    </dependency>
+    <dependency>
+      <groupId>com.jcraft</groupId>
+      <artifactId>jsch</artifactId>
+      <version>0.1.48</version>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>ch.ethz.ganymed</groupId>
+      <artifactId>ganymed-ssh2</artifactId>
+      <version>build210</version>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
+  </dependencies>
+
+</project>

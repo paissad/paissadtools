@@ -1,0 +1,4 @@
+* Add progress event listener when uploading or downloading resources ...
+* Treatment for symbolic links (download, upload ...)
+* Finish the method FtpImpl.deleteResource(); so that it deletes completely all
+resources into a directory.
