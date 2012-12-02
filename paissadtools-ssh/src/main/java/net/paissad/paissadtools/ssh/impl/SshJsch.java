@@ -6,7 +6,7 @@ import java.util.List;
 
 import net.paissad.paissadtools.ssh.AbstractSsh;
 import net.paissad.paissadtools.ssh.SshCommand;
-import net.paissad.paissadtools.ssh.SshSettings;
+import net.paissad.paissadtools.ssh.SshToolSettings;
 import net.paissad.paissadtools.util.CommonUtils;
 
 import org.slf4j.Logger;
@@ -20,7 +20,6 @@ import com.jcraft.jsch.UserInfo;
 
 /**
  * @author paissad
- * @since 0.1
  */
 public class SshJsch extends AbstractSsh {
 
@@ -31,7 +30,7 @@ public class SshJsch extends AbstractSsh {
     private JSch              jSch;
     private Session           session;
 
-    public SshJsch(final SshSettings sshSettings) {
+    public SshJsch(final SshToolSettings sshSettings) {
         super(sshSettings);
         this.jSch = new JSch();
     }

@@ -24,7 +24,6 @@ import org.apache.commons.io.IOUtils;
  * Gzip / Gunzip
  * 
  * @author paissad
- * @since 0.1
  */
 public class GzipTool extends AbstractCompressionHandler<GzipTool> {
 

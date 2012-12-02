@@ -7,7 +7,7 @@ import java.util.List;
 
 import net.paissad.paissadtools.ssh.AbstractSsh;
 import net.paissad.paissadtools.ssh.SshCommand;
-import net.paissad.paissadtools.ssh.SshSettings;
+import net.paissad.paissadtools.ssh.SshToolSettings;
 import net.paissad.paissadtools.util.CommonUtils;
 
 import org.slf4j.Logger;
@@ -21,7 +21,6 @@ import ch.ethz.ssh2.StreamGobbler;
 
 /**
  * @author paissad
- * @since 0.1
  */
 public class SshGanymed extends AbstractSsh {
 
@@ -33,7 +32,7 @@ public class SshGanymed extends AbstractSsh {
 
     private KnownHosts        database;
 
-    public SshGanymed(SshSettings sshSettings) {
+    public SshGanymed(SshToolSettings sshSettings) {
         super(sshSettings);
         this.database = new KnownHosts();
     }

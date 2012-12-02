@@ -1,6 +1,6 @@
 package net.paissad.paissadtools.ssh;
 
-import net.paissad.paissadtools.ssh.SshSettings.SSH_PROVIDER;
+import net.paissad.paissadtools.ssh.SshToolSettings.SSH_PROVIDER;
 import net.paissad.paissadtools.ssh.impl.SshGanymed;
 import net.paissad.paissadtools.ssh.impl.SshJsch;
 
@@ -15,9 +15,9 @@ class SshFactory {
 
     /**
      * @param sshSettings
-     * @return An instance of {@link Ssh} object.
+     * @return An instance of {@link SshTool} object.
      */
-    static Ssh getSsh(final SshSettings sshSettings) {
+    static SshTool getSsh(final SshToolSettings sshSettings) {
 
         if (sshSettings == null) throw new IllegalArgumentException("The ssh settings cannot be null.");
 

@@ -23,7 +23,7 @@ import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
-import net.paissad.paissadtools.api.ServiceEntry;
+import net.paissad.paissadtools.api.ITool;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -34,7 +34,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
 
-public class XmlTool implements ServiceEntry {
+public class XmlTool implements ITool {
 
     private static final long serialVersionUID = 1L;
 

@@ -1,8 +1,8 @@
 package net.paissad.paissadtools.xml;
 
-import net.paissad.paissadtools.exception.ServiceException;
+import net.paissad.paissadtools.exception.IToolServiceException;
 
-public class XmlServiceException extends ServiceException {
+public class XmlServiceException extends IToolServiceException {
 
     private static final long serialVersionUID = 1L;
 

@@ -1,18 +1,23 @@
 package net.paissad.paissadtools.compress.api;
 
 import java.io.File;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import org.apache.commons.io.FileUtils;
+
+import net.paissad.paissadtools.util.CommonUtils;
+
 /**
  * <p>
- * This class can be considered as an extra utility which compress/uncompress
- * files based on their extension. Almost all methods available in this class do
- * all use the {@link CompressionHandlerFactory} class in order to know which
- * correct {@link CompressionHandler} implementation to use for achieving the
- * specified task (compressing, uncompressing, resource adding or contents
- * listing)
+ * This class can be considered as an extra utility and or proxy which
+ * compress/uncompress files based on their extension. Almost all methods
+ * available in this class do all use the {@link CompressionHandlerFactory}
+ * class in order to know the correct {@link CompressionHandler} implementation
+ * to use for achieving the specified tasks (compressing, uncompressing,
+ * resource adding or contents listing)
  * </p>
  * <p>
  * By the way, this class is not an implementation of {@link CompressionHandler}
@@ -22,7 +27,6 @@ import java.util.regex.Pattern;
  * @see CompressionHandler
  * @see CompressionHandlerFactory
  * @author paissad
- * @since 0.0.1
  */
 public class CompressionTool {
 
@@ -50,7 +54,7 @@ public class CompressionTool {
      * @see CompressionHandlerFactory#getCompressionHandler(File)
      */
     public void compress(final File from, final File to) throws CompressException {
-        // FIXME
+        this.smartCompress(from, from.getParentFile(), to);
     }
 
     /**
@@ -72,50 +76,60 @@ public class CompressionTool {
      * @see CompressionHandlerFactory#getCompressionHandler(File)
      */
     public void compress(final File from, final File baseDir, final File to) throws CompressException {
-        this.toolFactory.getCompressionHandler(to).compress(from, baseDir, to);
+        this.smartCompress(from, baseDir, to);
+    }
+
+    private void smartCompress(final File from, final File baseDir, final File to) throws CompressException {
+
+        // XXX xxx.tar.gz.zip
+        final List<String> knownExtensions = this.retrieveKnownExtensions(to.getName());
+        Collections.reverse(knownExtensions);
+        this.toolFactory.getCompressionHandler(to.getName()).compress(from, baseDir, to);
+
+        boolean isLastExtension = false;
+        File currentResourceToCompress = null;
+
+        try {
+            for (int i = 0; i < knownExtensions.size(); i++) {
+
+                final String currentExtension = knownExtensions.get(i);
+                currentResourceToCompress = new File(CommonUtils.createTempFilename(
+                        "compressiontool_compress_", currentExtension));
+                FileUtils.copyFile(from, currentResourceToCompress);
+
+                if (isLastExtension) {
+                    this.toolFactory.getCompressionHandler(currentExtension)
+                            .compress(currentResourceToCompress, baseDir, to);
+                } else {
+
+                }
+            }
+        } catch (Exception e) {
+            throw new CompressException(e);
+        }
     }
 
     /**
      * <p>
-     * Uncompress a file. The uncompressed contents will be put into the same
-     * directory where the compressed file is located.
+     * Uncompress a file.
      * </p>
      * <p>
      * <b><span style='color:orange;text-decoration:underline'>NOTE</span></b> :
      * the compression tool {@link CompressionHandler} that will be used is
-     * based on the file's extension of the file to create specified by the "to"
-     * argument.
+     * based on the file's extension of the file to create specified by the
+     * "from" argument.
      * </p>
      * 
      * @param from - The file to uncompress
-     * @throws CompressException
-     * @see CompressionHandler#decompress(File)
-     * @see CompressionHandlerFactory#getCompressionHandler(File)
-     */
-    public void decompress(final File from) throws CompressException {
-        this.toolFactory.getCompressionHandler(from).decompress(from);
-    }
-
-    /**
-     * <p>
-     * Uncompress a file. The uncompressed contents will be put into the same
-     * directory where the compressed file is located.
-     * </p>
-     * <p>
-     * <b><span style='color:orange;text-decoration:underline'>NOTE</span></b> :
-     * the compression tool {@link CompressionHandler} that will be used is
-     * based on the file's extension of the file to create specified by the "to"
-     * argument.
-     * </p>
-     * 
-     * @param from - The file to uncompress
-     * @param destination - Where to put the uncompressed resources.
+     * @param destination - The location where to put the uncompressed
+     *            resource(s).
      * @throws CompressException
      * @see CompressionHandler#decompress(File, File)
-     * @see CompressionHandlerFactory#getCompressionHandler(File)
+     * @see CompressionHandlerFactory#getCompressionHandler(String)
      */
     public void decompress(final File from, final File destination) throws CompressException {
-        this.toolFactory.getCompressionHandler(from).decompress(from, destination);
+        // TODO handle successive decompression (ex: tar.gz, tar.bz2 ..)
+        this.toolFactory.getCompressionHandler(from.getName()).decompress(from, destination);
     }
 
     /**
@@ -138,11 +152,11 @@ public class CompressionTool {
      * @param resourcesToAdd - The resources (files and/or directories) to add
      * @throws CompressException
      * @see CompressionHandler#addResources(File, List)
-     * @see CompressionHandlerFactory#getCompressionHandler(File)
+     * @see CompressionHandlerFactory#getCompressionHandler(String)
      */
     public void addResources(final File compressedFile, final List<File> resourcesToAdd)
             throws CompressException {
-        this.toolFactory.getCompressionHandler(compressedFile).addResources(compressedFile, resourcesToAdd);
+        this.toolFactory.getCompressionHandler(compressedFile.getName()).addResources(compressedFile, resourcesToAdd);
     }
 
     /**
@@ -161,16 +175,18 @@ public class CompressionTool {
      * to add new resources into a compressed file such as GZIP, BZIP2, XZ.
      * </p>
      * 
-     * @param compressedFile - The file to which we want to.
+     * @param compressedFile - The compressed file to which we want to add new
+     *            resources (files and/or directories)
      * @param baseDir
      * @param resourcesToAdd - The resources (files and/or directories) to add
      * @throws CompressException
      * @see CompressionHandler#addResources(File, File, List)
-     * @see CompressionHandlerFactory#getCompressionHandler(File)
+     * @see CompressionHandlerFactory#getCompressionHandler(String)
      */
     public void addResources(final File compressedFile, final File baseDir, final List<File> resourcesToAdd)
             throws CompressException {
-        this.toolFactory.getCompressionHandler(compressedFile).addResources(compressedFile, baseDir, resourcesToAdd);
+        this.toolFactory.getCompressionHandler(compressedFile.getName()).addResources(compressedFile, baseDir,
+                resourcesToAdd);
     }
 
     /**
@@ -180,10 +196,10 @@ public class CompressionTool {
      * @return The contents of the compressed file.
      * @throws CompressException
      * @see CompressionHandler#list(File)
-     * @see CompressionHandlerFactory#getCompressionHandler(File)
+     * @see CompressionHandlerFactory#getCompressionHandler(String)
      */
     public List<String> list(final File compressedFile) throws CompressException {
-        return this.toolFactory.getCompressionHandler(compressedFile).list(compressedFile);
+        return this.toolFactory.getCompressionHandler(compressedFile.getName()).list(compressedFile);
     }
 
     private boolean filenameEndsWithSupportedExtension(final String filename) {
@@ -203,8 +219,15 @@ public class CompressionTool {
         return result;
     }
 
+    /**
+     * If for example the filename is "/tmp/tool.tar.gz.bzip2.xz", the result
+     * will be ---> [.xz, .bzip2, .gz, .tar]
+     * 
+     * @param compressedFilename
+     * @return
+     */
     private LinkedList<String> retrieveKnownExtensions(final String compressedFilename) {
-        LinkedList<String> result = new LinkedList<String>();
+        final LinkedList<String> result = new LinkedList<String>();
         for (final String extension : CompressionHandlerFactory.getSupportedExtensions()) {
             if (compressedFilename.endsWith(extension)) {
                 result.add(extension);
@@ -219,9 +242,9 @@ public class CompressionTool {
      * XXX
      */
     public static void main(final String... args) throws Exception {
-        CompressionTool tool = new CompressionTool();
-        File from = new File("/tmp/bb");
-        File to = new File("/tmp/tool.tar.gz.bzip2.xz");
+        final CompressionTool tool = new CompressionTool();
+        final File from = new File("/tmp/bb");
+        final File to = new File("/tmp/tool.tar.gz.bzip2.xz");
         // tool.compress(from, to);
         for (final String s : tool.retrieveKnownExtensions(to.getName())) {
             System.out.println(s);

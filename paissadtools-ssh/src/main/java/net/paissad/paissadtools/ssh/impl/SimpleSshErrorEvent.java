@@ -4,7 +4,6 @@ import net.paissad.paissadtools.ssh.SshErrorEvent;
 
 /**
  * @author paissad
- * @since 0.1
  */
 public class SimpleSshErrorEvent implements SshErrorEvent {
 

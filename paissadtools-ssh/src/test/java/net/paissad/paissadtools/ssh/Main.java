@@ -3,7 +3,7 @@ package net.paissad.paissadtools.ssh;
 import java.util.LinkedList;
 import java.util.List;
 
-import net.paissad.paissadtools.ssh.SshSettings.SSH_PROVIDER;
+import net.paissad.paissadtools.ssh.SshToolSettings.SSH_PROVIDER;
 
 public class Main {
 
@@ -14,7 +14,7 @@ public class Main {
         final String password = "missmiss";
         final int port = 22;
 
-        final SshSettings sshSettings = new SshSettings(user, password, host, port);
+        final SshToolSettings sshSettings = new SshToolSettings(user, password, host, port);
 
         final List<SshCommand> sshCommands = new LinkedList<SshCommand>();
         sshCommands.add(new SshCommand("echo 'Hello World !'"));
@@ -25,7 +25,7 @@ public class Main {
 
         for (final SSH_PROVIDER provider : SSH_PROVIDER.values()) {
             sshSettings.setSshProvider(provider);
-            final Ssh ssh = SshFactory.getSsh(sshSettings);
+            final SshTool ssh = SshFactory.getSsh(sshSettings);
 
             final SshErrorListener sshErrorListener = new SshErrorListener() {
 

@@ -10,7 +10,6 @@ import lombok.Setter;
  * command itself.
  * 
  * @author paissad
- * @since 0.1
  */
 @Getter
 @Setter

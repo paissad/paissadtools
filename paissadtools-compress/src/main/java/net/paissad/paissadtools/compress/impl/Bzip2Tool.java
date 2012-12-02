@@ -19,6 +19,11 @@ import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorOutputStream;
 import org.apache.commons.io.IOUtils;
 
+/**
+ * bzip2 / bunzip tool.
+ * 
+ * @author paissad
+ */
 public class Bzip2Tool extends AbstractCompressionHandler<Bzip2Tool> {
 
     public static final String BZIP2_EXTENSION = ".bzip2";

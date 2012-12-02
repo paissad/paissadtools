@@ -12,7 +12,7 @@ public class Main {
         String password = "missmiss";
         String host = "localhost";
 
-        final FtpSettings ftpSettings = new FtpSettings(user, password, host);
+        final FtpToolSettings ftpSettings = new FtpToolSettings(user, password, host);
 
         // String dir = "/subdir/another_dir/foo/bar";
 
@@ -20,8 +20,8 @@ public class Main {
         files.add(new File("pom.xml"));
         files.add(new File("stuffs.txt"));
 
-        final FtpService ftpService = new FtpService();
-        final Ftp ftp = ftpService.createEntry(ftpSettings);
+        final FtpToolService ftpService = new FtpToolService();
+        final FtpTool ftp = ftpService.createEntry(ftpSettings);
 
         if (!ftp.connect()) {
             throw new IllegalStateException("Unable to connect to the FTP server.");

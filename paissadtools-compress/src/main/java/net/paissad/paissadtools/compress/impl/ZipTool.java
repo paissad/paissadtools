@@ -24,6 +24,11 @@ import org.apache.commons.compress.archivers.zip.ZipFile;
 import org.apache.commons.compress.utils.IOUtils;
 import org.apache.commons.io.FileUtils;
 
+/**
+ * Zip / unzip tool.
+ * 
+ * @author paissad
+ */
 public class ZipTool extends AbstractCompressionHandler<ZipTool> {
 
     public static final String ZIP_EXTENSION = ".zip";

@@ -22,6 +22,11 @@ import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
 import org.apache.commons.compress.utils.IOUtils;
 import org.apache.commons.io.FileUtils;
 
+/**
+ * Tar / untar tool.
+ * 
+ * @author paissad
+ */
 public class TarTool extends AbstractCompressionHandler<TarTool> {
 
     public static final String TAR_EXTENSION = ".tar";

@@ -21,6 +21,11 @@ import org.tukaani.xz.FilterOptions;
 import org.tukaani.xz.LZMA2Options;
 import org.tukaani.xz.XZOutputStream;
 
+/**
+ * XZ tool.
+ * 
+ * @author paissad
+ */
 public class XZTool extends AbstractCompressionHandler<XZTool> {
 
     public static final String XZ_EXTENSION = ".xz";

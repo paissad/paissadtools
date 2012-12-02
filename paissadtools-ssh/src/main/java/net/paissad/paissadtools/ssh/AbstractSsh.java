@@ -7,17 +7,17 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public abstract class AbstractSsh implements Ssh {
+public abstract class AbstractSsh implements SshTool {
 
     protected static final File SSH_USER_DIR     = new File(System.getProperty("user.home"), ".ssh");
 
     private static final long   serialVersionUID = 1L;
 
-    private SshSettings         sshSettings;
+    private SshToolSettings         sshSettings;
 
     private SshErrorListener    errorListener;
 
-    protected AbstractSsh(final SshSettings sshSettings) {
+    protected AbstractSsh(final SshToolSettings sshSettings) {
         this.sshSettings = sshSettings;
     }
 
@@ -29,7 +29,7 @@ public abstract class AbstractSsh implements Ssh {
         final File defaultKeyFile = new File(SSH_USER_DIR, "id_rsa").isFile()
                 ? new File(SSH_USER_DIR, "id_rsa") : new File(SSH_USER_DIR, "id_dsa");
 
-        final String pemFilePath = this.getSshSettings().getProperties().getProperty(SshSettings.PROPS_KEYFILE);
+        final String pemFilePath = this.getSshSettings().getProperties().getProperty(SshToolSettings.PROPS_KEYFILE);
         File pemFile = null;
         if (pemFilePath == null || pemFilePath.trim().isEmpty()) {
             pemFile = defaultKeyFile;

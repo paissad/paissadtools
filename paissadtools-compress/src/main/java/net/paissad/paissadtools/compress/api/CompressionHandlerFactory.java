@@ -1,6 +1,5 @@
 package net.paissad.paissadtools.compress.api;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -54,20 +53,21 @@ public class CompressionHandlerFactory {
     }
 
     /**
-     * <b>NOTE</b> : the guess is based on the file's extension.
+     * <b>NOTE</b> : The returned {@link CompressionHandler} is based on the
+     * file's extension of the compressed file.
      * 
-     * @param compressedFile
+     * @param compressedFileName
      * @return The instance of the correct tool / {@link CompressionHandler} to
      *         use for the specified file.
      * @throws CompressException If the specified file has an extension which is
      *             not known by any of the compression tools available in this
      *             library.
      */
-    public CompressionHandler<?> getCompressionHandler(final File compressedFile) throws CompressException {
+    public CompressionHandler<?> getCompressionHandler(final String compressedFileName) throws CompressException {
         for (final Class<?> toolClass : compressionHandlerClasses) {
             try {
                 final CompressionHandler<?> tool = (CompressionHandler<?>) toolClass.newInstance();
-                if (compressedFile.getName().endsWith(tool.getConventionalExtension())) {
+                if (compressedFileName.endsWith(tool.getConventionalExtension())) {
                     return tool;
                 }
             } catch (InstantiationException e) {
@@ -76,7 +76,7 @@ public class CompressionHandlerFactory {
                 throw new RuntimeException(e);
             }
         }
-        throw new CompressException("The file '" + compressedFile
+        throw new CompressException("The file '" + compressedFileName
                 + "' has an unknown extension, unable to get the correct compress tool.");
     }
 
