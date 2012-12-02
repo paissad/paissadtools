@@ -1,8 +1,7 @@
 package net.paissad.paissadtools.compress.impl;
 
-import static org.junit.Assert.fail;
-
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 import junit.framework.Assert;
@@ -64,7 +63,7 @@ public class GzipToolTest {
         gzipTool.compress(from, null);
     }
 
-    @Test(expected = CompressException.class)
+    @Test(expected = IllegalArgumentException.class)
     public final void testCompress_OUTPUTFILE_IS_A_DIR() throws CompressException {
         GzipTool gzipTool = new GzipTool();
         final File from = new File(TestConstants.DIR_SRC_TEST_RESOURCES, TestConstants.FILENAME_FILE);
@@ -95,8 +94,10 @@ public class GzipToolTest {
     }
 
     @Test(expected = CompressException.class)
-    public final void testAddResources() throws CompressException {
-        new GzipTool().addResources(null, null);
+    public final void testAddResources() throws CompressException, IOException {
+        FileUtils.copyFileToDirectory(new File(TestConstants.DIR_SRC_TEST_RESOURCES, FILENAME_AA_GZ), tmpDir);
+        final File gzipFile = new File(tmpDir, FILENAME_AA_GZ);
+        new GzipTool().addResources(gzipFile, null);
     }
 
     @Test
@@ -117,7 +118,8 @@ public class GzipToolTest {
 
     @Test
     public final void testGetAdapter() {
-        fail("Not yet implemented"); // TODO
+        // fake / dummy test !
+        Assert.assertNull(new GzipTool().getAdapter(null));
     }
 
     @Test

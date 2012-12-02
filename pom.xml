@@ -43,6 +43,7 @@
     <module>paissadtools-ant</module>
     <module>paissadtools-api</module>
     <module>paissadtools-audio</module>
+    <module>paissadtools-compress</module>
     <module>paissadtools-ftp</module>
     <module>paissadtools-geolocation</module>
     <module>paissadtools-git</module>
@@ -59,8 +60,6 @@
     <module>paissadtools-system</module>
     <module>paissadtools-utils</module>
     <module>paissadtools-xml</module>
-    <module>paissad-compress</module>
-    <module>paissadtools-compress</module>
   </modules>
 
   <dependencyManagement>
