@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<fileset-config file-format-version="1.2.0" simple-config="false" sync-formatter="false">
+  <local-check-config name="checkstyle_paissadtools" location="internal_config__1354478021995.xml" type="internal" description=""/>
+  <fileset name="all" enabled="true" check-config-name="checkstyle_paissadtools" local="true">
+    <file-match-pattern match-pattern="." include-pattern="true"/>
+  </fileset>
+</fileset-config>

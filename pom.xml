@@ -9,7 +9,8 @@
   <name>PaissadTools</name>
 
   <properties>
-    <project.build.sourceEncoding>utf-8</project.build.sourceEncoding>
+      <project.build.sourceEncoding>utf-8</project.build.sourceEncoding>
+      <build.tools.resources.dir>build-tools/src/main/resources/</build.tools.resources.dir>
   </properties>
 
   <build>
@@ -37,7 +38,37 @@
         </plugin>
       </plugins>
     </pluginManagement>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <version>2.9.1</version>
+     </plugin>
+    </plugins>
   </build>
+
+  <reporting>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-project-info-reports-plugin</artifactId>
+        <version>2.2</version>
+        <configuration>
+          <dependencyDetailsEnabled>true</dependencyDetailsEnabled>
+          <dependencyLocationsEnabled>false</dependencyLocationsEnabled>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <version>2.9.1</version>
+        <configuration>
+            <configLocation>${build.tools.resources.dir}/checkstyle.xml</configLocation>
+          <!-- <headerLocation>whizbang/LICENSE.txt</headerLocation> -->
+        </configuration>
+      </plugin>
+    </plugins>
+  </reporting>
 
   <modules>
     <module>paissadtools-ant</module>
@@ -60,6 +91,7 @@
     <module>paissadtools-system</module>
     <module>paissadtools-utils</module>
     <module>paissadtools-xml</module>
+    <module>build-tools</module>
   </modules>
 
   <dependencyManagement>
