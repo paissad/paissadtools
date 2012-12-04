@@ -71,24 +71,12 @@
   </reporting>
 
   <modules>
-    <module>paissadtools-ant</module>
     <module>paissadtools-api</module>
-    <module>paissadtools-audio</module>
     <module>paissadtools-compress</module>
     <module>paissadtools-ftp</module>
-    <module>paissadtools-geolocation</module>
-    <module>paissadtools-git</module>
-    <module>paissadtools-gradle</module>
     <module>paissadtools-http</module>
-    <module>paissadtools-jdbc</module>
-    <module>paissadtools-jpa</module>
-    <module>paissadtools-ldap</module>
-    <module>paissadtools-logging</module>
     <module>paissadtools-mail</module>
-    <module>paissadtools-maven</module>
     <module>paissadtools-ssh</module>
-    <module>paissadtools-svn</module>
-    <module>paissadtools-system</module>
     <module>paissadtools-utils</module>
     <module>paissadtools-xml</module>
     <module>build-tools</module>
