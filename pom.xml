@@ -7,10 +7,23 @@
   <version>0.1</version>
   <packaging>pom</packaging>
   <name>PaissadTools</name>
+  <url>http://paissad.github.com/paissadtools/</url>
+
+  <developers>
+    <developer>
+      <name>Papa Issa DIAKHATE</name>
+      <id>paissad</id>
+      <email>paissad@gmail.com</email>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+  </developers>
 
   <properties>
-      <project.build.sourceEncoding>utf-8</project.build.sourceEncoding>
-      <build.tools.resources.dir>build-tools/src/main/resources/</build.tools.resources.dir>
+    <project.build.sourceEncoding>utf-8</project.build.sourceEncoding>
+    <build.tools.resources.dir>build-tools/src/main/resources/</build.tools.resources.dir>
+    <compiler.source.version>1.6</compiler.source.version>
   </properties>
 
   <build>
@@ -20,8 +33,8 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>
           <configuration>
-            <source>1.6</source>
-            <target>1.6</target>
+            <source>${compiler.source.version}</source>
+            <target>${compiler.source.version}</target>
             <showDeprecation>true</showDeprecation>
             <optimize>true</optimize>
           </configuration>
@@ -43,7 +56,7 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
         <version>2.9.1</version>
-     </plugin>
+      </plugin>
     </plugins>
   </build>
 
@@ -63,9 +76,29 @@
         <artifactId>maven-checkstyle-plugin</artifactId>
         <version>2.9.1</version>
         <configuration>
-            <configLocation>${build.tools.resources.dir}/checkstyle.xml</configLocation>
+          <configLocation>${build.tools.resources.dir}/checkstyle.xml</configLocation>
           <!-- <headerLocation>whizbang/LICENSE.txt</headerLocation> -->
         </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jxr-plugin</artifactId>
+        <version>2.3</version>
+      </plugin>
+      <plugin>
+        <artifactId>maven-pmd-plugin</artifactId>
+        <version>2.7.1</version>
+        <configuration>
+          <targetJdk>${compiler.source.version}</targetJdk>
+        </configuration>
+        <reportSets>
+          <reportSet>
+            <reports>
+              <report>pmd</report>
+              <report>cpd</report>
+            </reports>
+          </reportSet>
+        </reportSets>
       </plugin>
     </plugins>
   </reporting>
