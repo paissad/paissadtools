@@ -1,13 +1,14 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
 
+  <modelVersion>4.0.0</modelVersion>
   <groupId>net.paissad.paissadtools</groupId>
   <artifactId>paissadtools</artifactId>
   <version>0.1</version>
   <packaging>pom</packaging>
   <name>PaissadTools</name>
-  <url>http://paissad.github.com/paissadtools/</url>
+  <inceptionYear>2012</inceptionYear>
+  <url>http://paissad.github.com/paissadtools</url>
 
   <developers>
     <developer>
@@ -19,6 +20,16 @@
       </roles>
     </developer>
   </developers>
+
+  <scm>
+    <url>scm:git:https://github.com/paissad/paissadtools</url>
+    <developerConnection>scm:git:https://github.com/paissad/paissadtools</developerConnection>
+    <connection>scm:git:https://github.com/paissad/paissadtools</connection>
+  </scm>
+  <issueManagement>
+    <url>https://github.com/paissad/paissadtools/issues</url>
+    <system>GitHub</system>
+  </issueManagement>
 
   <properties>
     <project.build.sourceEncoding>utf-8</project.build.sourceEncoding>
@@ -57,6 +68,11 @@
         <artifactId>maven-checkstyle-plugin</artifactId>
         <version>2.9.1</version>
       </plugin>
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <version>0.6.1-SNAPSHOT</version>
+      </plugin>
     </plugins>
   </build>
 
@@ -70,6 +86,18 @@
           <dependencyDetailsEnabled>true</dependencyDetailsEnabled>
           <dependencyLocationsEnabled>false</dependencyLocationsEnabled>
         </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-changes-plugin</artifactId>
+        <version>2.8</version>
+        <reportSets>
+          <reportSet>
+            <reports>
+              <report>github-report</report>
+            </reports>
+          </reportSet>
+        </reportSets>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -120,13 +148,19 @@
       <dependency>
         <groupId>junit</groupId>
         <artifactId>junit</artifactId>
-        <version>4.10</version>
-        <scope>test</scope>
+        <version>4.11</version>
+      </dependency>
+      <dependency>
+        <groupId>org.projectlombok</groupId>
+        <artifactId>lombok</artifactId>
+        <version>0.11.6</version>
+        <optional>true</optional>
       </dependency>
       <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-api</artifactId>
-        <version>1.6.5</version>
+        <version>1.7.2</version>
+        <optional>true</optional>
       </dependency>
     </dependencies>
   </dependencyManagement>

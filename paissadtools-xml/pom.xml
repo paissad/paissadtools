@@ -8,7 +8,7 @@
     <relativePath>..</relativePath>
   </parent>
   <artifactId>paissadtools-xml</artifactId>
-  <description>Contains utilities relative to XML, XSD, XSLT and such technologies.</description>
+  <description>Contains utilities related to XML, XSD, XSLT and such technologies.</description>
   <dependencies>
     <dependency>
       <groupId>net.paissad.paissadtools</groupId>

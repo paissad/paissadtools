@@ -9,7 +9,7 @@
     <relativePath>..</relativePath>
   </parent>
   <artifactId>paissadtools-mail</artifactId>
-  <description>Contains utilities relative to mail.</description>
+  <description>Contains utilities related to mail.</description>
 
   <dependencies>
     <dependency>
@@ -30,7 +30,7 @@
     <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
-      <version>0.11.6</version>
+      <optional>false</optional>
     </dependency>
   </dependencies>
 

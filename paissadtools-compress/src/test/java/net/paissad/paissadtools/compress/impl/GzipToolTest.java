@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-import junit.framework.Assert;
 import net.paissad.paissadtools.compress.TestConstants;
 import net.paissad.paissadtools.compress.TestUtil;
 import net.paissad.paissadtools.compress.api.CompressException;
@@ -12,6 +11,7 @@ import net.paissad.paissadtools.util.CommonUtils;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -27,7 +27,7 @@ public class GzipToolTest {
     }
 
     @AfterClass
-    public static void tearDownAfterClass() throws Exception {
+    public static void tearDownAfterClass() {
         FileUtils.deleteQuietly(tmpDir);
     }
 
