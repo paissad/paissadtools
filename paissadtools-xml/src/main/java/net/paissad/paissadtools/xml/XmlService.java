@@ -1,10 +1,17 @@
 package net.paissad.paissadtools.xml;
 
 import net.paissad.paissadtools.api.AbstractToolService;
+import net.paissad.paissadtools.api.IToolService;
 import net.paissad.paissadtools.exception.IToolServiceException;
 import net.paissad.paissadtools.exception.IToolServiceRuntimeException;
 
-public class XmlService extends AbstractToolService<XmlTool, XmlSettings> {
+/**
+ * The {@link IToolService} implementation for {@link XmlTool}.
+ * 
+ * @author paissad
+ * 
+ */
+public class XmlService extends AbstractToolService<XmlTool, XmlToolSettings> {
 
     private boolean ready;
 
@@ -25,11 +32,11 @@ public class XmlService extends AbstractToolService<XmlTool, XmlSettings> {
 
     @Override
     public XmlTool createEntry() throws IToolServiceException {
-        return this.createEntry(new XmlSettings());
+        return this.createEntry(new XmlToolSettings());
     }
 
     @Override
-    public XmlTool createEntry(XmlSettings xmlSettings) throws IToolServiceException {
+    public XmlTool createEntry(final XmlToolSettings xmlSettings) throws IToolServiceException {
         // TODO Auto-generated method stub
         return null;
     }

@@ -16,6 +16,7 @@ import net.paissad.paissadtools.ftp.FtpToolSettings;
 import net.paissad.paissadtools.ftp.FtpToolSettings.FTP_TRANSFER_MODE;
 import net.paissad.paissadtools.util.CommonUtils;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.net.PrintCommandListener;
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
@@ -26,20 +27,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * FTP implementation for {@link FtpTool}
+ * FTP implementation for {@link FtpTool}.
  * 
  * @author paissad
  */
 public class FtpToolImpl implements FtpTool {
 
-    private static final long serialVersionUID = 1L;
+    private static Logger    logger      = LoggerFactory.getLogger(FtpToolImpl.class);
 
-    private static Logger     logger           = LoggerFactory.getLogger(FtpToolImpl.class);
+    private static final int BUFFER_SIZE = 8192;
 
-    private static final int  BUFFER_SIZE      = 8192;
-
-    private FTPClient         ftpClient;
-    private FtpToolSettings   ftpSettings;
+    private FTPClient        ftpClient;
+    private FtpToolSettings  ftpSettings;
 
     public FtpToolImpl(final FtpToolSettings ftpSettings) {
         if (ftpSettings == null) throw new IllegalArgumentException("The FTP settings cannot be null.");
@@ -78,14 +77,16 @@ public class FtpToolImpl implements FtpTool {
             logger.info("Connected and logged in successfully to the FTP server.");
             return true;
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             logger.error("Error while connecting to the FTP server.", e);
             return false;
         }
     }
 
     @Override
-    public void getResource(String remoteResource, File localResource, boolean overwrite) throws FtpToolException {
+    public void getResource(final String remoteResource, final File localResource, final boolean overwrite)
+            throws FtpToolException {
+
         OutputStream out = null;
         try {
             if (!overwrite) {
@@ -104,7 +105,7 @@ public class FtpToolImpl implements FtpTool {
                 throw new IllegalStateException("Unknown remote ftp resource type, cannot download !");
             }
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw new FtpToolException(e);
         } finally {
             CommonUtils.closeStreamQuietly(out);
@@ -112,7 +113,8 @@ public class FtpToolImpl implements FtpTool {
     }
 
     @Override
-    public void getResource(String remoteResource, OutputStream localResourceStream) throws FtpToolException {
+    public void getResource(final String remoteResource, final OutputStream localResourceStream)
+            throws FtpToolException {
 
         CommonUtils.assertNotBlank(remoteResource);
         CommonUtils.assertNotNullOrThrowException(localResourceStream);
@@ -121,14 +123,14 @@ public class FtpToolImpl implements FtpTool {
             this.ftpClient.retrieveFile(remoteResource, localResourceStream);
             this.verifyReplyCode("Unable to retrieve the the remote resource " + remoteResource);
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             logger.error(e.getMessage(), e);
             throw new FtpToolException(e);
         }
     }
 
     @Override
-    public void putResource(final File localResource, final String destination, boolean overwrite)
+    public void putResource(final File localResource, final String destination, final boolean overwrite)
             throws FtpToolException {
 
         if (localResource == null) throw new NullPointerException("The local resource to upload cannot be null.");
@@ -158,7 +160,7 @@ public class FtpToolImpl implements FtpTool {
                 throw new IllegalStateException("Unknown type of file, cannot upload !");
             }
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw new FtpToolException(e);
         } finally {
             CommonUtils.closeStreamQuietly(in);
@@ -171,7 +173,7 @@ public class FtpToolImpl implements FtpTool {
         try {
             String errMsg;
 
-            int filesize = localResourceStream.available();
+            final int filesize = localResourceStream.available();
             this.ftpClient.allocate(filesize);
             final String humanFileSize = CommonUtils.humanReadableByteCount(filesize, false);
             errMsg = "Unable to allocate the amount of size " + humanFileSize + " for the file " + destination;
@@ -181,7 +183,7 @@ public class FtpToolImpl implements FtpTool {
             errMsg = "Unable to store the file " + destination + " to the server";
             this.verifyReplyCode(errMsg);
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw new FtpToolException("Unable to send the resource to " + destination, e);
         }
     }
@@ -196,9 +198,8 @@ public class FtpToolImpl implements FtpTool {
             if (this.isFtpFile(remoteResource) || this.isFtpSymbolicLink(remoteResource)) {
                 if (!this.ftpClient.deleteFile(remoteResource)) {
                     throw new FtpToolException(errMsg);
-                } else {
-                    this.verifyReplyCode(errMsg);
                 }
+                this.verifyReplyCode(errMsg);
 
             } else if (this.isFtpDir(remoteResource)) {
                 this.deleteDirectory(remoteResource);
@@ -215,13 +216,13 @@ public class FtpToolImpl implements FtpTool {
     }
 
     @Override
-    public void mkdirs(String dirname) throws FtpToolException {
+    public void mkdirs(final String dirname) throws FtpToolException {
 
         try {
-            char firstChar = dirname.charAt(0);
+            final char firstChar = dirname.charAt(0);
             String currentRoot = (firstChar == '/') ? "/" : "";
 
-            String[] subDirnames = dirname.split("/");
+            final String[] subDirnames = dirname.split("/");
 
             for (final String name : subDirnames) {
                 if (!name.isEmpty()) {
@@ -233,14 +234,14 @@ public class FtpToolImpl implements FtpTool {
                 }
             }
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             logger.error("", e);
             throw new FtpToolException(e);
         }
     }
 
     @Override
-    public void sendCommand(String ftpCommand, String arguments) throws FtpToolException {
+    public void sendCommand(final String ftpCommand, final String arguments) throws FtpToolException {
         CommonUtils.assertNotBlankOrThrowException(ftpCommand);
         try {
             logger.info("Sending the following FTP command --> {} {}", ftpCommand, (arguments == null) ? "" : arguments);
@@ -305,7 +306,7 @@ public class FtpToolImpl implements FtpTool {
     }
 
     @Override
-    public void setLogReceiver(OutputStream out) {
+    public void setLogReceiver(final OutputStream out) {
         if (out == null) return;
         this.ftpClient.addProtocolCommandListener(new PrintCommandListener(new PrintWriter(out)));
     }
@@ -333,24 +334,17 @@ public class FtpToolImpl implements FtpTool {
     /**
      * @param ftpResource
      * @return <code>true</code> if the remote resource is a file and not a
-     *         directory or symlink or something else ...
+     *         directory or symbolic link or something else ...
      * @throws IOException
      * @throws FtpToolException
      */
     private boolean isFtpFile(final String ftpResource) throws IOException, FtpToolException {
-        if (ftpResource.equals("/")) return false;
-        // We list the parent resource before doing a listing ...
-        String parentResource = ftpResource;
-        if (parentResource.endsWith("/")) {
-            parentResource = parentResource.replaceFirst("/*$", "");
-        }
-        parentResource = parentResource.substring(0, parentResource.lastIndexOf("/") + 1);
-
-        final String[] tokens = ftpResource.replaceFirst("/*$", "").split("/");
-        final String ftpResourceName = tokens[tokens.length - 1];
+        if ("/".equals(ftpResource)) return false;
+        final String parentResource = this.getParentResource(ftpResource);
+        final String ftpResourceName = this.getResourceName(ftpResource);
         final FTPFile[] result = this.ftpClient.listFiles(parentResource, new FTPFileFilter() {
             @Override
-            public boolean accept(FTPFile f) {
+            public boolean accept(final FTPFile f) {
                 return f.isFile() && f.getName().equals(ftpResourceName);
             }
         });
@@ -365,19 +359,12 @@ public class FtpToolImpl implements FtpTool {
      * @throws FtpToolException
      */
     private boolean isFtpDir(final String ftpResource) throws IOException, FtpToolException {
-        if (ftpResource.equals("/")) return true;
-        // We list the parent resource before doing a listing ...
-        String parentResource = ftpResource;
-        if (parentResource.endsWith("/")) {
-            parentResource = parentResource.replaceFirst("/*$", "");
-        }
-        parentResource = parentResource.substring(0, parentResource.lastIndexOf("/") + 1);
-
-        final String[] tokens = ftpResource.replaceFirst("/*$", "").split("/");
-        final String ftpResourceName = tokens[tokens.length - 1];
+        if ("/".equals(ftpResource)) return true;
+        final String parentResource = this.getParentResource(ftpResource);
+        final String ftpResourceName = this.getResourceName(ftpResource);
         final FTPFile[] result = this.ftpClient.listFiles(parentResource, new FTPFileFilter() {
             @Override
-            public boolean accept(FTPFile f) {
+            public boolean accept(final FTPFile f) {
                 return f.isDirectory() && f.getName().equals(ftpResourceName);
             }
         });
@@ -386,19 +373,12 @@ public class FtpToolImpl implements FtpTool {
     }
 
     private boolean isFtpSymbolicLink(final String ftpResource) throws IOException, FtpToolException {
-        if (ftpResource.equals("/")) return false;
-        // We list the parent resource before doing a listing ...
-        String parentResource = ftpResource;
-        if (parentResource.endsWith("/")) {
-            parentResource = parentResource.replaceFirst("/*$", "");
-        }
-        parentResource = parentResource.substring(0, parentResource.lastIndexOf("/") + 1);
-
-        final String[] tokens = ftpResource.replaceFirst("/*$", "").split("/");
-        final String ftpResourceName = tokens[tokens.length - 1];
+        if ("/".equals(ftpResource)) return false;
+        final String parentResource = this.getParentResource(ftpResource);
+        final String ftpResourceName = this.getResourceName(ftpResource);
         final FTPFile[] result = this.ftpClient.listFiles(parentResource, new FTPFileFilter() {
             @Override
-            public boolean accept(FTPFile f) {
+            public boolean accept(final FTPFile f) {
                 return f.isSymbolicLink() && f.getName().equals(ftpResourceName);
             }
         });
@@ -406,12 +386,27 @@ public class FtpToolImpl implements FtpTool {
         return result.length == 1;
     }
 
+    private String getParentResource(final String ftpResource) {
+        String parentResource = ftpResource;
+        if (parentResource.endsWith("/")) {
+            parentResource = parentResource.replaceFirst("/*$", "");
+        }
+        parentResource = parentResource.substring(0, parentResource.lastIndexOf("/") + 1);
+        return parentResource;
+    }
+
+    private String getResourceName(final String ftpResource) {
+        final String[] tokens = ftpResource.replaceFirst("/*$", "").split("/");
+        final String ftpResourceName = tokens[tokens.length - 1];
+        return ftpResourceName;
+    }
+
     private boolean isFtpEmptyDir(final String ftpDirname) throws IOException {
         final FTPFile[] subFiles = this.ftpClient.listFiles(ftpDirname, new FTPFileFilter() {
 
             @Override
-            public boolean accept(FTPFile file) {
-                if (file.getName().equals(".") || file.getName().equals("..")) return false;
+            public boolean accept(final FTPFile file) {
+                if (".".equals(file.getName()) || "..".equals(file.getName())) return false;
                 return true;
             }
         });
@@ -421,7 +416,7 @@ public class FtpToolImpl implements FtpTool {
     /**
      * @param client
      * @param ftpDirname - The remote directory to download from the FTP server.
-     * @param destDir - Where to save to downloaded directory.
+     * @param destDir - Where to save the downloaded directory.
      * @throws IOException
      * @throws FtpToolException
      */
@@ -429,12 +424,12 @@ public class FtpToolImpl implements FtpTool {
             throws IOException, FtpToolException {
 
         if (destDir.isFile()) throw new IllegalStateException("Cannot download a directory and save it to a file ...");
-        if (!destDir.exists()) destDir.mkdirs();
+        if (!destDir.exists()) FileUtils.forceMkdir(destDir);
         if (!destDir.exists()) throw new IllegalStateException("Unable to create the directory");
 
         final FTPFile[] ftpFiles = client.listFiles(ftpDirname);
         for (final FTPFile oneFtpFile : ftpFiles) {
-            if (oneFtpFile.getName().equals(".") || oneFtpFile.getName().equals("..")) continue;
+            if (".".equals(oneFtpFile.getName()) || "..".equals(oneFtpFile.getName())) continue;
             final String resourceName = ftpDirname + "/" + oneFtpFile.getName();
             if (oneFtpFile.isFile()) {
                 // Is a FTP file.
@@ -448,8 +443,7 @@ public class FtpToolImpl implements FtpTool {
                 }
             } else if (oneFtpFile.isDirectory()) {
                 // Is a FTP directory.
-                this.downloadRemoteDir(
-                        client, resourceName, new File(destDir, oneFtpFile.getName()));
+                this.downloadRemoteDir(client, resourceName, new File(destDir, oneFtpFile.getName()));
             } else {
                 throw new IllegalStateException("Cannot retrieve resource which not a file, not a directory");
             }
@@ -466,7 +460,7 @@ public class FtpToolImpl implements FtpTool {
         final File[] subFiles = localDir.listFiles();
 
         for (final File oneFile : subFiles) {
-            if (oneFile.getName().equals(".") || oneFile.getName().equals("..")) continue;
+            if (".".equals(oneFile.getName()) || "..".equals(oneFile.getName())) continue;
             final String ftpResourceName = ftpDirname + "/" + oneFile.getName();
 
             if (oneFile.isFile()) {
@@ -497,7 +491,7 @@ public class FtpToolImpl implements FtpTool {
                 final FTPFile[] subFiles = this.ftpClient.listFiles(ftpDirname);
 
                 for (final FTPFile f : subFiles) {
-                    if (f.getName().equals(".") || f.getName().equals("..")) continue;
+                    if (".".equals(f.getName()) || "..".equals(f.getName())) continue;
 
                     final String ftpResourceName = ftpDirname + "/" + f.getName();
 

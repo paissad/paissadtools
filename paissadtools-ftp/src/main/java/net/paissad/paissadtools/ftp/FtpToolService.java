@@ -9,7 +9,6 @@ import net.paissad.paissadtools.ftp.impl.FtpToolImpl;
  * FTP service implementation.
  * 
  * @author paissad
- * @since 0.1
  */
 public class FtpToolService extends AbstractToolService<FtpTool, FtpToolSettings> {
 
@@ -36,7 +35,7 @@ public class FtpToolService extends AbstractToolService<FtpTool, FtpToolSettings
     }
 
     @Override
-    public FtpTool createEntry(FtpToolSettings ftpSettings) throws IToolServiceException {
+    public FtpTool createEntry(final FtpToolSettings ftpSettings) throws IToolServiceException {
         return new FtpToolImpl(ftpSettings);
     }
 

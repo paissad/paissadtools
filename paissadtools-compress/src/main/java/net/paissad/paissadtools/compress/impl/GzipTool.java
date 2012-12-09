@@ -10,23 +10,27 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.List;
-import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
-import net.paissad.paissadtools.compress.api.CompressException;
+import net.paissad.paissadtools.compress.CompressionTool;
 import net.paissad.paissadtools.compress.api.CompressionHandler;
+import net.paissad.paissadtools.compress.exception.CompressException;
 import net.paissad.paissadtools.util.CommonUtils;
 
+import org.apache.commons.compress.compressors.CompressorStreamFactory;
+import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 
 /**
- * Gzip / Gunzip
+ * Gzip / Gunzip.
  * 
  * @author paissad
+ * @see CompressionTool
  */
 public class GzipTool extends AbstractCompressionHandler<GzipTool> {
 
+    /** The default gzip extension. */
     public static final String GZIP_EXTENSION = ".gz";
 
     /**
@@ -36,8 +40,10 @@ public class GzipTool extends AbstractCompressionHandler<GzipTool> {
      * <li>can only compress files, not directories.</li>
      * </ul>
      */
+    // CHECKSTYLE:OFF
     @Override
     public GzipTool compress(final File from, final File baseDir, final File to) throws CompressException {
+        // CHECKSTYLE:ON
         if (!from.isFile()) {
             throw new IllegalArgumentException("GZIP can compress only files.");
         }
@@ -66,25 +72,26 @@ public class GzipTool extends AbstractCompressionHandler<GzipTool> {
      *             a file, or if the specified destination is an existent
      *             directory.
      */
+    // CHECKSTYLE:OFF
     @Override
     public GzipTool decompress(final File gzipFile, final File destFile) throws CompressException {
+        // CHECKSTYLE:ON
         if (!gzipFile.isFile()) {
             throw new IllegalArgumentException("The specified resource to decompress is not a file : " + gzipFile);
         }
         if (destFile.isDirectory()) {
             throw new IllegalArgumentException("The specified destination is a directory : " + destFile);
         }
-        GZIPInputStream in = null;
+        GzipCompressorInputStream in = null;
         OutputStream out = null;
         try {
-            in = new GZIPInputStream(new BufferedInputStream(new FileInputStream(gzipFile), BUFFER_8192), BUFFER_8192);
+            in = new GzipCompressorInputStream(new BufferedInputStream(new FileInputStream(gzipFile), BUFFER_8192),
+                    true);
             out = new BufferedOutputStream(new FileOutputStream(destFile), BUFFER_8192);
-            FileUtils.forceMkdir(destFile.getParentFile());
-            IOUtils.copyLarge(in, out);
+            IOUtils.copy(in, out);
             return this;
-        } catch (IOException ioe) {
-            throw new CompressException("Error while uncompressing the file '" + gzipFile + "' to" + "'" + destFile
-                    + "'.", ioe);
+        } catch (IOException e) {
+            throw new CompressException("Error while uncompressing the gzip file : " + gzipFile, e);
         } finally {
             CommonUtils.closeAllStreamsQuietly(in, out);
         }
@@ -123,6 +130,11 @@ public class GzipTool extends AbstractCompressionHandler<GzipTool> {
     @Override
     public String getConventionalExtension() {
         return GZIP_EXTENSION;
+    }
+
+    @Override
+    protected final String getCompressorType() {
+        return CompressorStreamFactory.GZIP;
     }
 
 }

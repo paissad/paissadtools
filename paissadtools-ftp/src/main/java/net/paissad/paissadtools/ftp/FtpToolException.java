@@ -3,6 +3,7 @@ package net.paissad.paissadtools.ftp;
 import net.paissad.paissadtools.exception.IToolServiceException;
 
 /**
+ * This exception is thrown by the FTP Tool.
  * 
  * @author paissad
  */
@@ -14,15 +15,15 @@ public class FtpToolException extends IToolServiceException {
         this("");
     }
 
-    public FtpToolException(String message) {
+    public FtpToolException(final String message) {
         super(message);
     }
 
-    public FtpToolException(Throwable cause) {
+    public FtpToolException(final Throwable cause) {
         super(cause);
     }
 
-    public FtpToolException(String message, Throwable cause) {
+    public FtpToolException(final String message, final Throwable cause) {
         super(message, cause);
     }
 

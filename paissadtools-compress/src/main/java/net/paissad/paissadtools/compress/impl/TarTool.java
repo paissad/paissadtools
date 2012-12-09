@@ -12,8 +12,10 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import net.paissad.paissadtools.compress.api.CompressException;
+import net.paissad.paissadtools.compress.CompressionTool;
 import net.paissad.paissadtools.compress.api.CompressionHandler;
+import net.paissad.paissadtools.compress.exception.CompressException;
+import net.paissad.paissadtools.compress.impl.internal.InternalCompressorStreamFactory;
 import net.paissad.paissadtools.util.CommonUtils;
 
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
@@ -26,9 +28,11 @@ import org.apache.commons.io.FileUtils;
  * Tar / untar tool.
  * 
  * @author paissad
+ * @see CompressionTool
  */
 public class TarTool extends AbstractCompressionHandler<TarTool> {
 
+    /** The default tar extension. */
     public static final String TAR_EXTENSION = ".tar";
 
     /**
@@ -36,8 +40,10 @@ public class TarTool extends AbstractCompressionHandler<TarTool> {
      *             existing directory. (If the destination does already exist,
      *             it must be a file so that it can be overwritten correctly.
      */
+    // CHECKSTYLE:OFF
     @Override
     public TarTool compress(final File from, final File baseDir, final File to) throws CompressException {
+        // CHECKSTYLE:ON
         if (to.isDirectory()) {
             throw new IllegalArgumentException("(TAR) The resulting tar file cannot be a directory : " + to);
         }
@@ -88,8 +94,10 @@ public class TarTool extends AbstractCompressionHandler<TarTool> {
      * @throws IllegalArgumentException If the specified .tar file to uncompress
      *             is not a file, or if the the specified destination is a file.
      */
+    // CHECKSTYLE:OFF
     @Override
     public TarTool decompress(final File tarFile, final File destDir) throws CompressException {
+        // CHECKSTYLE:ON
         if (!tarFile.isFile() || !tarFile.canRead()) {
             throw new IllegalArgumentException(
                     "The specified resource to decompress is not a file or cannot be read : " + tarFile);
@@ -113,7 +121,7 @@ public class TarTool extends AbstractCompressionHandler<TarTool> {
                 } else {
                     out = new BufferedOutputStream(new FileOutputStream(new File(destDir, entryName)), BUFFER_8192);
                     final int entrySize = (int) entry.getSize();
-                    byte[] content = new byte[entrySize];
+                    final byte[] content = new byte[entrySize];
                     int bytesRead;
                     while ((bytesRead = tarInputStream.read(content, 0, entrySize)) != -1) {
                         out.write(content, 0, bytesRead);
@@ -189,6 +197,7 @@ public class TarTool extends AbstractCompressionHandler<TarTool> {
                     FileUtils.moveFile(backupFile, tarFile);
                 }
             } catch (IOException e2) {
+                // Do nothing.
             }
             throw new CompressException("(TAR) Error while adding resource to the tarFile : " + tarFile, e);
         } finally {
@@ -233,5 +242,10 @@ public class TarTool extends AbstractCompressionHandler<TarTool> {
     @Override
     public String getConventionalExtension() {
         return TAR_EXTENSION;
+    }
+
+    @Override
+    protected final String getCompressorType() throws IllegalStateException {
+        return InternalCompressorStreamFactory.TAR;
     }
 }

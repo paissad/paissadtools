@@ -34,7 +34,7 @@ public class SshToolService extends AbstractToolService<SshTool, SshToolSettings
     }
 
     @Override
-    public SshTool createEntry(SshToolSettings sshSettings) throws IToolServiceException {
+    public SshTool createEntry(final SshToolSettings sshSettings) throws IToolServiceException {
         return SshFactory.getSsh(sshSettings);
     }
 

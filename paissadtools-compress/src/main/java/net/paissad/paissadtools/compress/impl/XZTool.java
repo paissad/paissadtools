@@ -11,10 +11,12 @@ import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.List;
 
-import net.paissad.paissadtools.compress.api.CompressException;
+import net.paissad.paissadtools.compress.CompressionTool;
 import net.paissad.paissadtools.compress.api.CompressionHandler;
+import net.paissad.paissadtools.compress.exception.CompressException;
 import net.paissad.paissadtools.util.CommonUtils;
 
+import org.apache.commons.compress.compressors.CompressorStreamFactory;
 import org.apache.commons.compress.compressors.xz.XZCompressorInputStream;
 import org.apache.commons.io.IOUtils;
 import org.tukaani.xz.FilterOptions;
@@ -25,9 +27,11 @@ import org.tukaani.xz.XZOutputStream;
  * XZ tool.
  * 
  * @author paissad
+ * @see CompressionTool
  */
 public class XZTool extends AbstractCompressionHandler<XZTool> {
 
+    /** The default .xz extension. */
     public static final String XZ_EXTENSION = ".xz";
 
     /**
@@ -37,8 +41,10 @@ public class XZTool extends AbstractCompressionHandler<XZTool> {
      * <li>can only compress files, not directories.</li>
      * </ul>
      */
+    // CHECKSTYLE:OFF
     @Override
-    public XZTool compress(File from, File baseDir, File to) throws CompressException {
+    public XZTool compress(final File from, final File baseDir, final File to) throws CompressException {
+        // CHECKSTYLE:ON
         if (!from.isFile()) {
             throw new IllegalArgumentException("XZ can compress only files.");
         }
@@ -65,8 +71,10 @@ public class XZTool extends AbstractCompressionHandler<XZTool> {
      *             a file, or if the specified destination is an existent
      *             directory.
      */
+    // CHECKSTYLE:OFF
     @Override
-    public XZTool decompress(File xzFile, File destFile) throws CompressException {
+    public XZTool decompress(final File xzFile, final File destFile) throws CompressException {
+        // CHECKSTYLE:ON
         if (!xzFile.isFile()) {
             throw new IllegalArgumentException("The specified resource to decompress is not a file : " + xzFile);
         }
@@ -76,14 +84,14 @@ public class XZTool extends AbstractCompressionHandler<XZTool> {
         XZCompressorInputStream xzInputStream = null;
         OutputStream out = null;
         try {
-            xzInputStream = new XZCompressorInputStream(new BufferedInputStream(
-                    new FileInputStream(xzFile), BUFFER_8192));
+            xzInputStream = new XZCompressorInputStream(new BufferedInputStream(new FileInputStream(xzFile),
+                    BUFFER_8192), true);
             out = new BufferedOutputStream(new FileOutputStream(destFile), BUFFER_8192);
             IOUtils.copyLarge(xzInputStream, out);
 
         } catch (IOException e) {
-            throw new CompressException(
-                    "(XZ) Error while uncompressing the file '" + xzFile + "' to '" + destFile + "'", e);
+            throw new CompressException("(XZ) Error while uncompressing the file '" + xzFile + "' to '" + destFile
+                    + "'", e);
         } finally {
             CommonUtils.closeAllStreamsQuietly(xzInputStream, out);
         }
@@ -91,7 +99,8 @@ public class XZTool extends AbstractCompressionHandler<XZTool> {
     }
 
     @Override
-    public XZTool addResources(File xzFile, File baseDir, List<File> resourcesToAdd) throws CompressException {
+    public XZTool addResources(final File xzFile, final File baseDir, final List<File> resourcesToAdd)
+            throws CompressException {
         throw new CompressException("Adding resources not supported for XZ or LZMA");
     }
 
@@ -122,6 +131,11 @@ public class XZTool extends AbstractCompressionHandler<XZTool> {
     @Override
     public String getConventionalExtension() {
         return XZ_EXTENSION;
+    }
+
+    @Override
+    protected final String getCompressorType() {
+        return CompressorStreamFactory.XZ;
     }
 
 }

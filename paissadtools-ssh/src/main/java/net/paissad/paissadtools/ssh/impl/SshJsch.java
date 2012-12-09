@@ -9,6 +9,7 @@ import net.paissad.paissadtools.ssh.SshCommand;
 import net.paissad.paissadtools.ssh.SshToolSettings;
 import net.paissad.paissadtools.util.CommonUtils;
 
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,12 +24,10 @@ import com.jcraft.jsch.UserInfo;
  */
 public class SshJsch extends AbstractSsh {
 
-    private static final long serialVersionUID = 1L;
+    private static Logger logger = LoggerFactory.getLogger(SshJsch.class);
 
-    private static Logger     logger           = LoggerFactory.getLogger(SshJsch.class);
-
-    private JSch              jSch;
-    private Session           session;
+    private JSch          jSch;
+    private Session       session;
 
     public SshJsch(final SshToolSettings sshSettings) {
         super(sshSettings);
@@ -42,7 +41,7 @@ public class SshJsch extends AbstractSsh {
             this.session.connect(this.getSshSettings().getConnectionTimeout());
             return true;
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             final Exception cause = new Exception("(JSCH) Error while connecting to the server.", e);
             this.executeErrorListener(new SimpleSshErrorEvent(cause));
             return false;
@@ -51,23 +50,13 @@ public class SshJsch extends AbstractSsh {
 
     @Override
     public boolean connectByUsingPublicKey() {
-        // TODO Auto-generated method stub
+        // TODO Auto-generated method stub --> connectByUsingPublicKey
         return false;
     }
 
     @Override
-    public boolean executeCommands(List<SshCommand> sshCommands, OutputStream stdout) {
-        return executeCommands(sshCommands, stdout, null);
-    }
-
-    @Override
-    public boolean executeCommands(List<SshCommand> sshCommands, OutputStream stdout, OutputStream stderr) {
-        return executeCommands(sshCommands, stdout, stderr, false);
-    }
-
-    @Override
-    public boolean executeCommands(List<SshCommand> sshCommands, OutputStream stdout, OutputStream stderr,
-            boolean useCompression) {
+    public boolean executeCommands(final List<SshCommand> sshCommands, final OutputStream stdout,
+            final OutputStream stderr, final boolean useCompression) {
 
         InputStream out = null;
         InputStream err = null;
@@ -75,27 +64,27 @@ public class SshJsch extends AbstractSsh {
             this.configureCompression(useCompression);
 
             logger.debug("({}) Execution of the specified ssh commands ...", this.getImplementationName());
-            for (SshCommand sshCommand : sshCommands) {
+            for (final SshCommand sshCommand : sshCommands) {
                 if (sshCommand == null || sshCommand.getCommand() == null || sshCommand.getCommand().trim().isEmpty()) {
                     continue;
                 }
 
-                logger.debug("-- ({}) Executing the ssh command --> {}",
-                        this.getImplementationName(), sshCommand.getCommand());
+                logger.debug("-- ({}) Executing the ssh command --> {}", this.getImplementationName(),
+                        sshCommand.getCommand());
                 final ChannelExec channelExec = (ChannelExec) this.session.openChannel("exec");
                 channelExec.setCommand(sshCommand.getCommand());
                 out = channelExec.getInputStream();
                 err = channelExec.getErrStream();
                 channelExec.connect(sshCommand.getTimeout());
-                CommonUtils.copyStream(out, stdout);
-                CommonUtils.copyStream(err, stderr);
+                IOUtils.copy(out, stdout);
+                IOUtils.copy(err, stderr);
                 channelExec.disconnect();
             }
 
             logger.debug("({}) All ssh commands executed successfully !", this.getImplementationName());
             return true;
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             final Exception cause = new Exception("(JSCH) Error during the execution of the commands.", e);
             this.executeErrorListener(new SimpleSshErrorEvent(cause));
             return false;
@@ -111,7 +100,7 @@ public class SshJsch extends AbstractSsh {
             this.session.disconnect();
             return true;
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             final Exception cause = new Exception("(GANYMED) Error during the disconnection", e);
             this.executeErrorListener(new SimpleSshErrorEvent(cause));
             return false;
@@ -124,7 +113,7 @@ public class SshJsch extends AbstractSsh {
     }
 
     @Override
-    protected void configureCompression(boolean useCompression) {
+    protected void configureCompression(final boolean useCompression) {
         if (useCompression) {
             logger.debug("");
             this.session.setConfig("compression.s2c", "zlib@openssh.com,zlib,none");
@@ -134,8 +123,8 @@ public class SshJsch extends AbstractSsh {
     }
 
     private void initialize() throws JSchException {
-        this.session = this.jSch.getSession(
-                this.getSshSettings().getUser(), this.getSshSettings().getHost(), this.getSshSettings().getPort());
+        this.session = this.jSch.getSession(this.getSshSettings().getUser(), this.getSshSettings().getHost(), this
+                .getSshSettings().getPort());
         if (this.getKnownHostsFile().isFile()) {
             this.jSch.setKnownHosts(this.getKnownHostsFile().getAbsolutePath());
         }
@@ -146,10 +135,13 @@ public class SshJsch extends AbstractSsh {
         this.session.setConfig("StrictHostKeyChecking", "no");
     }
 
-    private class CustomUserInfo implements UserInfo {
+    /**
+     * @author paissad
+     */
+    private static class CustomUserInfo implements UserInfo {
 
-        private String password;
-        private String passPhrase;
+        private final String password;
+        private final String passPhrase;
 
         CustomUserInfo(final String password, final String passPhrase) {
             this.password = password;
@@ -167,22 +159,22 @@ public class SshJsch extends AbstractSsh {
         }
 
         @Override
-        public boolean promptPassword(String message) {
+        public boolean promptPassword(final String message) {
             return false;
         }
 
         @Override
-        public boolean promptPassphrase(String message) {
+        public boolean promptPassphrase(final String message) {
             return false;
         }
 
         @Override
-        public boolean promptYesNo(String message) {
+        public boolean promptYesNo(final String message) {
             return false;
         }
 
         @Override
-        public void showMessage(String message) {
+        public void showMessage(final String message) {
         }
 
     }

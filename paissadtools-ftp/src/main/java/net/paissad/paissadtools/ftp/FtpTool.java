@@ -8,6 +8,7 @@ import net.paissad.paissadtools.api.ITool;
 import net.paissad.paissadtools.ftp.FtpToolSettings.FTP_TRANSFER_MODE;
 
 /**
+ * The top interface for FTP tool.
  * 
  * @author paissad
  */
@@ -30,10 +31,10 @@ public interface FtpTool extends ITool {
      * @param localResource - Where to save the downloaded resource.
      * @param overwrite - If <code>true</code> then overwrite the local
      *            destination.
-     * @throws FtpToolException
+     * @throws FtpToolException - If an error occurs while retrieving the
+     *             resource.
      */
-    void getResource(final String remoteResource, final File localResource, boolean overwrite)
-            throws FtpToolException;
+    void getResource(final String remoteResource, final File localResource, boolean overwrite) throws FtpToolException;
 
     /**
      * <p>
@@ -49,7 +50,8 @@ public interface FtpTool extends ITool {
      *            FILE)</b>
      * @param localResourceStream - The <tt>OutputStream</tt> which receives the
      *            downloaded file.
-     * @throws FtpToolException
+     * @throws FtpToolException - If an error occurs while retrieving the
+     *             resource.
      */
     void getResource(final String remoteResource, final OutputStream localResourceStream) throws FtpToolException;
 
@@ -62,7 +64,7 @@ public interface FtpTool extends ITool {
      * @param destination - Where to save the resource.
      * @param overwrite - If <code>true</code> then overwrite destination
      *            resources (file or directory) if they do already exist.
-     * @throws FtpToolException
+     * @throws FtpToolException - If an error occurs while sending the resource.
      */
     void putResource(final File localResource, final String destination, boolean overwrite) throws FtpToolException;
 
@@ -82,7 +84,7 @@ public interface FtpTool extends ITool {
      * @param localResourceStream - The local resource to upload.
      * @param destination - The name of the destination file onto the FTP
      *            server.
-     * @throws FtpToolException
+     * @throws FtpToolException - If an error occurs while sending the resource.
      */
     void putResource(final InputStream localResourceStream, final String destination) throws FtpToolException;
 
@@ -91,7 +93,8 @@ public interface FtpTool extends ITool {
      * If the resource is a directory, it is deleted recursively.
      * 
      * @param remoteResource - The resource to delete.
-     * @throws FtpToolException
+     * @throws FtpToolException - If an error occurs while deleting the
+     *             resource.
      */
     void deleteResource(final String remoteResource) throws FtpToolException;
 
@@ -101,7 +104,8 @@ public interface FtpTool extends ITool {
      * yet.
      * 
      * @param dirname - The directory to create.
-     * @throws FtpToolException
+     * @throws FtpToolException - If an error occurs while creating the
+     *             directory.
      */
     void mkdirs(final String dirname) throws FtpToolException;
 
@@ -111,9 +115,10 @@ public interface FtpTool extends ITool {
      * command you're trying to send is really supported.
      * 
      * @param ftpCommand - the name of the FTP command to send.
-     * @param arguments - The arguments to pass to the FTP commmand. Can be
-     *            blank (<code>null</code> or empty).
-     * @throws FtpToolException
+     * @param arguments - The arguments to pass to the FTP command. Can be blank
+     *            (<code>null</code> or empty).
+     * @throws FtpToolException - If an error occurs while sending the command
+     *             to the ftp server.
      */
     void sendCommand(final String ftpCommand, final String arguments) throws FtpToolException;
 

@@ -8,10 +8,6 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URLEncoder;
-import java.security.KeyManagementException;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
@@ -91,12 +87,28 @@ public class HttpTool implements ITool {
      * http://hc.apache.org/httpcomponents-client-ga/examples.html
      */
 
-    private static final long   serialVersionUID = 1L;
+    private static final String UTF8_ENCODING = "UTF-8";
 
-    private static final String UTF8_ENCODING    = "UTF-8";
-
+    /**
+     * Represents a HTTP method.
+     * 
+     * @author paissad
+     */
     public static enum Http_Method {
-        DELETE, GET, POST, HEAD, PUT, OPTIONS, TRACE;
+        /** DELETE HTTP method. */
+        DELETE,
+        /** GET HTTP method. */
+        GET,
+        /** POST HTTP method. */
+        POST,
+        /** HEAD HTTP method. */
+        HEAD,
+        /** PUT HTTP method. */
+        PUT,
+        /** OPTIONS HTTP method. */
+        OPTIONS,
+        /** TRACE HTTP method. */
+        TRACE;
     }
 
     /** List of current & active request being processed. */
@@ -121,12 +133,10 @@ public class HttpTool implements ITool {
      * @return The HTTP response of type {@link HttpToolResponse}.
      * @throws IllegalArgumentException If the file to upload or the specified
      *             destination URL is <tt>null</tt>.
-     * @throws HttpToolException
+     * @throws HttpToolException - If an error occurs while uploading the file.
      */
-    public HttpToolResponse upload(
-            final File fileToUpload,
-            final String destUrl,
-            final HttpToolSettings requestSettings) throws IllegalArgumentException, HttpToolException {
+    public HttpToolResponse upload(final File fileToUpload, final String destUrl, final HttpToolSettings requestSettings)
+            throws IllegalArgumentException, HttpToolException {
 
         if (fileToUpload == null) throw new IllegalArgumentException("The file to upload cannot be null");
         if (destUrl == null) throw new IllegalArgumentException("The URL cannot be null.");
@@ -184,8 +194,8 @@ public class HttpTool implements ITool {
     /**
      * Calls the HTTP client.
      * 
-     * @param url
-     * @param method
+     * @param url - The URL where to send the request.
+     * @param method - The HTTP method to use.
      * @param requestSettings - Contains the optional settings
      *            (username/password if authentication is needed when processing
      *            the request. Contains additional parameters and/or headers to
@@ -195,12 +205,11 @@ public class HttpTool implements ITool {
      * @return The HTTP response of type {@link HttpToolResponse}.
      * @throws IllegalArgumentException If the specified url and/or the http
      *             method to use is <tt>null</tt>
-     * @throws HttpToolException
+     * @throws HttpToolException - If an error occurs while processing the HTTP
+     *             request.
      * @see Http_Method
      */
-    public HttpToolResponse sendRequest(
-            final String url,
-            final Http_Method method,
+    public HttpToolResponse sendRequest(final String url, final Http_Method method,
             final HttpToolSettings requestSettings) throws IllegalArgumentException, HttpToolException {
 
         if (url == null) throw new IllegalArgumentException("The url where to send the request cannot be null.");
@@ -212,33 +221,8 @@ public class HttpTool implements ITool {
             final String host = uri.getHost();
             final int port = uri.getPort();
             httpClient = this.getNewHttpClient(host, port, requestSettings);
-            HttpRequestBase request = null;
 
-            switch (method) {
-            case DELETE:
-                request = new HttpDelete(uri);
-                break;
-            case GET:
-                request = new HttpGet(uri);
-                break;
-            case POST:
-                request = new HttpPost(uri);
-                break;
-            case HEAD:
-                request = new HttpHead(uri);
-                break;
-            case PUT:
-                request = new HttpPut(uri);
-                break;
-            case OPTIONS:
-                request = new HttpOptions(uri);
-                break;
-            case TRACE:
-                request = new HttpTrace(uri);
-                break;
-            default:
-                throw new IllegalArgumentException("Http method is not supported : " + method);
-            }
+            final HttpRequestBase request = this.getRequestFromHTTPMethod(method, uri);
 
             this.addRequest(request);
 
@@ -266,8 +250,41 @@ public class HttpTool implements ITool {
         }
     }
 
+    private HttpRequestBase getRequestFromHTTPMethod(final Http_Method method, final URI uri) {
+
+        HttpRequestBase request = null;
+
+        switch (method) {
+        case DELETE:
+            request = new HttpDelete(uri);
+            break;
+        case GET:
+            request = new HttpGet(uri);
+            break;
+        case POST:
+            request = new HttpPost(uri);
+            break;
+        case HEAD:
+            request = new HttpHead(uri);
+            break;
+        case PUT:
+            request = new HttpPut(uri);
+            break;
+        case OPTIONS:
+            request = new HttpOptions(uri);
+            break;
+        case TRACE:
+            request = new HttpTrace(uri);
+            break;
+        default:
+            throw new IllegalArgumentException("HTTP method not supported : " + method);
+        }
+
+        return request;
+    }
+
     /**
-     * Aborts all current and active requests being processed by this Http tool
+     * Aborts all current and active requests being processed by this HTTP tool
      * client.
      */
     public void abort() {
@@ -315,10 +332,8 @@ public class HttpTool implements ITool {
      * @return An instance of {@link DefaultHttpClient}.
      * @throws HttpToolException
      */
-    private DefaultHttpClient getNewHttpClient(
-            final String host,
-            final int port,
-            final HttpToolSettings requestSettings) throws HttpToolException {
+    private DefaultHttpClient getNewHttpClient(final String host, final int port, final HttpToolSettings requestSettings)
+            throws HttpToolException {
 
         try {
             final TrustStrategy trustStrategy = new TrustStrategy() {
@@ -357,8 +372,7 @@ public class HttpTool implements ITool {
                 // Proxy has the priority over the real target host
                 final ProxySettings proxy = requestSettings.getProxySettings();
                 if (proxy != null) {
-                    client.getCredentialsProvider().setCredentials(
-                            new AuthScope(proxy.getHost(), proxy.getPort()),
+                    client.getCredentialsProvider().setCredentials(new AuthScope(proxy.getHost(), proxy.getPort()),
                             new UsernamePasswordCredentials(proxy.getUser(), proxy.getPass()));
 
                     final HttpHost proxyRoute = new HttpHost(proxy.getHost(), proxy.getPort());
@@ -370,8 +384,7 @@ public class HttpTool implements ITool {
                     final String password = requestSettings.getPassword();
 
                     if (username != null) {
-                        client.getCredentialsProvider().setCredentials(
-                                new AuthScope(host, port),
+                        client.getCredentialsProvider().setCredentials(new AuthScope(host, port),
                                 new UsernamePasswordCredentials(username, password));
                     }
                 }
@@ -403,8 +416,7 @@ public class HttpTool implements ITool {
         }
 
         if (headers != null) { // Let's add additional / custom headers.
-            final Iterator<Entry<String, String>> iter =
-                    headers.entrySet().iterator();
+            final Iterator<Entry<String, String>> iter = headers.entrySet().iterator();
             while (iter.hasNext()) {
                 final Entry<String, String> o = iter.next();
                 request.addHeader(o.getKey(), o.getValue());
@@ -470,8 +482,14 @@ public class HttpTool implements ITool {
     // _________________________________________________________________________
 
     // http://hc.apache.org/httpcomponents-client-ga/tutorial/html/fundamentals.html#d4e292
+    /**
+     * This class contains the policy to use in order to know whether or not a
+     * retry must happen.
+     * 
+     * @author paissad
+     */
     @NotThreadSafe
-    private class InternalHttpRequestRetryHandler implements HttpRequestRetryHandler {
+    private static class InternalHttpRequestRetryHandler implements HttpRequestRetryHandler {
 
         private static final int MAX_RETRIES = 5;
 
@@ -480,32 +498,34 @@ public class HttpTool implements ITool {
 
         @Override
         public boolean retryRequest(final IOException exception, final int executionCount, final HttpContext context) {
+            boolean retry;
             if (executionCount >= MAX_RETRIES) {
-                return false; // Do not retry if over max retry count
+                retry = false; // Do not retry if over max retry count
+            } else {
+                if (exception instanceof NoHttpResponseException) {
+                    retry = true; // Retry if the server dropped the connection
+                } else if (exception instanceof SSLHandshakeException) {
+                    retry = false; // Do not retry on SSL handshake exception
+                } else {
+                    final HttpRequest request = (HttpRequest) context.getAttribute(ExecutionContext.HTTP_REQUEST);
+                    // Retry if the request is considered idempotent
+                    retry = !(request instanceof HttpEntityEnclosingRequest);
+                }
             }
-            if (exception instanceof NoHttpResponseException) {
-                return true; // Retry if the server dropped connection on us
-            }
-            if (exception instanceof SSLHandshakeException) {
-                return false; // Do not retry on SSL handshake exception
-            }
-            final HttpRequest request = (HttpRequest) context.getAttribute(ExecutionContext.HTTP_REQUEST);
-            final boolean idempotent = !(request instanceof HttpEntityEnclosingRequest);
-            if (idempotent) {
-                return true; // Retry if the request is considered idempotent
-            }
-            return false;
+            return retry;
         }
     }
 
     // _________________________________________________________________________
 
-    private class InternalSSLFactory extends SSLSocketFactory {
+    /**
+     * @author paissad
+     */
+    private static class InternalSSLFactory extends SSLSocketFactory {
 
         private SSLContext sslContext;
 
-        public InternalSSLFactory(final TrustStrategy trustStrategy)
-                throws NoSuchAlgorithmException, KeyManagementException, KeyStoreException, UnrecoverableKeyException {
+        public InternalSSLFactory(final TrustStrategy trustStrategy) throws Exception {
 
             super(trustStrategy, SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
 
@@ -513,7 +533,7 @@ public class HttpTool implements ITool {
 
                 @Override
                 public X509Certificate[] getAcceptedIssuers() {
-                    return null;
+                    return new X509Certificate[] {};
                 }
 
                 @Override
@@ -534,7 +554,10 @@ public class HttpTool implements ITool {
 
     // _________________________________________________________________________
 
-    private class InternalHttpRequestInterceptor implements HttpRequestInterceptor {
+    /**
+     * @author paissad
+     */
+    private static class InternalHttpRequestInterceptor implements HttpRequestInterceptor {
 
         public InternalHttpRequestInterceptor() {
         }
@@ -547,7 +570,10 @@ public class HttpTool implements ITool {
 
     // _________________________________________________________________________
 
-    private class InternalHttResponseInterceptor implements HttpResponseInterceptor {
+    /**
+     * @author paissad
+     */
+    private static class InternalHttResponseInterceptor implements HttpResponseInterceptor {
 
         public InternalHttResponseInterceptor() {
         }
@@ -566,7 +592,8 @@ public class HttpTool implements ITool {
     public static void main(final String[] args) throws Exception {
         final HttpTool httpTool = new HttpTool();
         final File fileToUpload = new File("pom.xml").getAbsoluteFile();
-        final String destUrl = "http://localhost:8080/serverstub/http/upload?simebouchon_exchange=00000&simebouchon_flowid=00000&simebouchon_response_file=pom.xml";
+        final String destUrl = "http://localhost:8080/serverstub/http/upload?simebouchon_exchange=00000&simebouchon_flowid=00000&"
+                + "simebouchon_response_file=pom.xml";
         final HttpToolResponse response = httpTool.upload(fileToUpload, destUrl, null);
         System.out.println(IOUtils.toString(response.getResponseBody()));
         final String dummyUrl = "http://localhost:8080/serverstub/http/dummy.do";

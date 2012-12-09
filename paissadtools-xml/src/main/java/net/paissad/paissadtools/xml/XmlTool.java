@@ -19,9 +19,12 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
+/**
+ * XML tool.
+ * 
+ * @author paissad
+ */
 public class XmlTool implements ITool {
-
-    private static final long serialVersionUID = 1L;
 
     public static void validate(final File xmlFile, final File xsdFile) throws XmlServiceException {
 
@@ -83,11 +86,4 @@ public class XmlTool implements ITool {
         }
     }
 
-    // XXX
-    public static void main(String[] args) throws Exception {
-        
-       final File xmlFile = new File("pom.xml");
-//       final String xmlContent = xmlFile.
-//       final Matcher = Pattern.compile("<properties(\r|\n|.)*>", Pattern.DOTALL)
-    }
 }

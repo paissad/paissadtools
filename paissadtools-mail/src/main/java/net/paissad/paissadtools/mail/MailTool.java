@@ -19,7 +19,6 @@ import javax.mail.Multipart;
 import javax.mail.Part;
 import javax.mail.Session;
 import javax.mail.Transport;
-import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
@@ -30,20 +29,22 @@ import lombok.Setter;
 import net.paissad.paissadtools.api.ITool;
 import net.paissad.paissadtools.util.CommonUtils;
 
+/**
+ * 
+ * @author paissad
+ */
 @Getter
 @Setter
 public class MailTool implements ITool {
-    
+
     /*
      * http://java.sun.com/developer/onlineTraining/JavaMail/contents.html
      */
 
-    private static final long   serialVersionUID = 1L;
+    private static final String SMTP_PROTOCOL  = "smtp";
+    private static final String SMTPS_PROTOCOL = "smtps";
 
-    private static final String SMTP_PROTOCOL    = "smtp";
-    private static final String SMTPS_PROTOCOL   = "smtps";
-
-    private MailToolSettings        mailSettings;
+    private MailToolSettings    mailSettings;
 
     private List<File>          attachements;
     private String              subject;
@@ -83,7 +84,7 @@ public class MailTool implements ITool {
     /**
      * Sends the email to the recipients with no debugging messages.
      * 
-     * @throws MessagingException
+     * @throws MessagingException If an error occurs while sending the message.
      * @see #send(boolean)
      */
     public void send() throws MessagingException {
@@ -94,14 +95,12 @@ public class MailTool implements ITool {
      * Sends the email to the recipients.
      * 
      * @param debug - Whether or not to debug the process.
-     * @throws MessagingException
+     * @throws MessagingException If an error occurs while sending the message.
      */
     public void send(final boolean debug) throws MessagingException {
 
         final String smtpUser = this.getMailSettings().getSmtpUser();
-        if (!CommonUtils.assertNotBlank(smtpUser)) {
-            throw new IllegalArgumentException("The SMTP user is not set !");
-        }
+        if (!CommonUtils.assertNotBlank(smtpUser)) throw new IllegalArgumentException("The SMTP user is not set !");
 
         final Properties props = this.initializeSmtpProperties();
 
@@ -112,15 +111,15 @@ public class MailTool implements ITool {
             // mail.transport.protocol => smtp
             transport = mailSession.getTransport();
 
-            MimeMessage message = new MimeMessage(mailSession);
-            String msgSubject = this.getSubject();
+            final MimeMessage message = new MimeMessage(mailSession);
+            final String msgSubject = this.getSubject();
             message.setSubject(msgSubject);
             message.setSentDate(new Date());
 
-            MimeBodyPart htmlPart = new MimeBodyPart();
+            final MimeBodyPart htmlPart = new MimeBodyPart();
             htmlPart.setContent(this.getContent(), "text/html; charset=utf-8");
 
-            Multipart mp = new MimeMultipart();
+            final Multipart mp = new MimeMultipart();
             mp.addBodyPart(htmlPart);
 
             // Add the attachements files.
@@ -128,19 +127,14 @@ public class MailTool implements ITool {
 
             message.setContent(mp);
 
-            // Retrieve the recipients who should receive the mail.
-            final Set<String> to_recipients = this.getRecipientsTO();
-            final Set<String> cc_recipients = this.getRecipientsCC();
-            final Set<String> bcc_recipients = this.getRecipientsBCC();
-
             // Add the retrieved recipients to the Message object ...
-            this.addRecipients(message, to_recipients, Message.RecipientType.TO);
-            this.addRecipients(message, cc_recipients, Message.RecipientType.CC);
-            this.addRecipients(message, bcc_recipients, Message.RecipientType.BCC);
+            this.addRecipients(message, this.getRecipientsTO(), Message.RecipientType.TO);
+            this.addRecipients(message, this.getRecipientsCC(), Message.RecipientType.CC);
+            this.addRecipients(message, this.getRecipientsBCC(), Message.RecipientType.BCC);
 
             message.setFrom(new InternetAddress(smtpUser, true));
 
-            // Set the acknowledgement ...
+            // Set the acknowledgment ...
             if (this.getMailSettings().isAutoAcknowledge()) {
                 message.setHeader("Disposition-Notification-To", smtpUser);
             }
@@ -148,21 +142,19 @@ public class MailTool implements ITool {
             // Set a custom Message-ID
             // We concatenate the time and a generated UUID and the sender's
             // host.
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd-HH:mm:ss");
-            String msgId = sdf.format(Calendar.getInstance(TimeZone.getTimeZone("UTC"), Locale.US).getTime());
-            msgId += "__" + UUID.randomUUID().toString().toLowerCase();
-            msgId += "__" + smtpUser;
-            message.setHeader("Message-ID", msgId);
+            final SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd-HH:mm:ss");
+            final StringBuilder msgId = new StringBuilder()
+                    .append(sdf.format(Calendar.getInstance(TimeZone.getTimeZone("UTC"), Locale.US).getTime()))
+                    .append("__").append(UUID.randomUUID().toString().toLowerCase(Locale.ENGLISH)).append("__")
+                    .append(smtpUser);
+            message.setHeader("Message-ID", msgId.toString());
 
             // Save all settings.
             message.saveChanges();
 
-            transport.connect(
-                    this.getMailSettings().getSmtpHost(),
-                    this.getMailSettings().getSmtpPort(),
-                    this.getMailSettings().getSmtpUser(),
-                    this.getMailSettings().getSmtpPassword());
-            
+            transport.connect(this.getMailSettings().getSmtpHost(), this.getMailSettings().getSmtpPort(), this
+                    .getMailSettings().getSmtpUser(), this.getMailSettings().getSmtpPassword());
+
             transport.sendMessage(message, message.getAllRecipients());
 
         } finally {
@@ -188,10 +180,10 @@ public class MailTool implements ITool {
         props.setProperty("mail.smtp.auth", String.valueOf(this.getMailSettings().isSmtpAuth()));
         props.setProperty("mail.smtp.starttls.enable", String.valueOf(this.getMailSettings().isStarttls()));
 
-        boolean isSSL = this.getMailSettings().isSsl();
-        if (isSSL) {
+        final boolean useSSL = this.getMailSettings().isSsl();
+        if (useSSL) {
             props.setProperty("mail.transport.protocol", SMTPS_PROTOCOL);
-            props.setProperty("mail.smtp.ssl.enable", String.valueOf(isSSL));
+            props.setProperty("mail.smtp.ssl.enable", String.valueOf(useSSL));
         }
         return props;
     }
@@ -199,16 +191,14 @@ public class MailTool implements ITool {
     // _________________________________________________________________________
 
     /**
-     * 
      * @param message - The message to use and where to add the recipients.
      * @param recipients - The recipients to add.
      * @param type - The type to use between (TO, CC, BCC)
      * 
-     * @throws AddressException
      * @throws MessagingException
      */
-    private void addRecipients(Message message, Set<String> recipients, Message.RecipientType type)
-            throws AddressException, MessagingException {
+    private void addRecipients(final Message message, final Set<String> recipients, final Message.RecipientType type)
+            throws MessagingException {
 
         if (recipients == null) return;
         for (final String aRecipient : recipients) {
@@ -219,23 +209,23 @@ public class MailTool implements ITool {
     // _________________________________________________________________________
 
     /**
-     * Adds some attachements files to a {@link Multipart} object
+     * Adds some attachments files to a {@link Multipart} object
      * 
-     * @param multipart - The multipart object to use for adding the
-     *            attachements to it !
+     * @param multipart - The multipart object to use for adding the attachments
+     *            to it !
      * @throws MessagingException
      */
-    private void addAttachementFilesToMessage(Multipart multipart) throws MessagingException {
+    private void addAttachementFilesToMessage(final Multipart multipart) throws MessagingException {
 
         final List<File> files = this.getAttachements();
         if (files == null || files.isEmpty()) {
-            return; // Get out ! There is no attachement file ...
+            return; // Get out ! There is no attachment file ...
         }
 
         // If there is at least one file, then attach them to the mail ...
         for (final File aFile : files) {
-            MimeBodyPart attachFilePart = new MimeBodyPart();
-            FileDataSource fds = new FileDataSource(aFile);
+            final MimeBodyPart attachFilePart = new MimeBodyPart();
+            final FileDataSource fds = new FileDataSource(aFile);
             attachFilePart.setDataHandler(new DataHandler(fds));
             attachFilePart.setFileName(fds.getName());
             attachFilePart.setDisposition(Part.ATTACHMENT);

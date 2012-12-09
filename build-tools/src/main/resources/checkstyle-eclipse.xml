@@ -185,4 +185,7 @@
   <module name="SeverityMatchFilter"/>
   <module name="SeverityMatchFilter"/>
   <module name="SuppressionCommentFilter"/>
+  <module name="SuppressionFilter">
+    <property name="file" value="/Users/paissad/Documents/workspace_eclipse/paissadtools/build-tools/src/main/resources/checkstyle-suppression-filter.xml"/>
+  </module>
 </module>

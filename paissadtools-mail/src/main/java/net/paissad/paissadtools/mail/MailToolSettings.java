@@ -2,8 +2,14 @@ package net.paissad.paissadtools.mail;
 
 import lombok.Getter;
 import lombok.Setter;
+import net.paissad.paissadtools.api.ITool;
 import net.paissad.paissadtools.api.IToolSettings;
 
+/**
+ * Represents the mail settings to use using the mail {@link ITool}.
+ * 
+ * @author paissad
+ */
 @Getter
 @Setter
 public class MailToolSettings implements IToolSettings {
@@ -17,11 +23,11 @@ public class MailToolSettings implements IToolSettings {
     private boolean           smtpAuth;
     private boolean           starttls;
     private boolean           ssl;
-    /** If set to true, then receive an acknowledgement after sending the mail. */
+    /** If set to true, then receive an acknowledgment after sending the mail. */
     private boolean           autoAcknowledge;
 
     public MailToolSettings() {
-        // By default, do not ask for an acknowledgement when sending a mail.
+        // By default, do not ask for an acknowledgment when sending a mail.
         this.autoAcknowledge = false;
     }
 

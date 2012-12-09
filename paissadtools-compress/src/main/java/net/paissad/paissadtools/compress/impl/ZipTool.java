@@ -13,8 +13,10 @@ import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.List;
 
-import net.paissad.paissadtools.compress.api.CompressException;
+import net.paissad.paissadtools.compress.CompressionTool;
 import net.paissad.paissadtools.compress.api.CompressionHandler;
+import net.paissad.paissadtools.compress.exception.CompressException;
+import net.paissad.paissadtools.compress.impl.internal.InternalCompressorStreamFactory;
 import net.paissad.paissadtools.util.CommonUtils;
 
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
@@ -28,9 +30,11 @@ import org.apache.commons.io.FileUtils;
  * Zip / unzip tool.
  * 
  * @author paissad
+ * @see CompressionTool
  */
 public class ZipTool extends AbstractCompressionHandler<ZipTool> {
 
+    /** The default zip extension. */
     public static final String ZIP_EXTENSION = ".zip";
 
     /**
@@ -38,8 +42,10 @@ public class ZipTool extends AbstractCompressionHandler<ZipTool> {
      *             existing directory. (If the destination does already exist,
      *             it must be a file so that it can be overwritten correctly.
      */
+    // CHECKSTYLE:OFF
     @Override
     public ZipTool compress(final File from, final File baseDir, final File to) throws CompressException {
+        // CHECKSTYLE:ON
         if (to.isDirectory()) {
             throw new IllegalArgumentException("(ZIP) The resulting tar file cannot be a directory : " + to);
         }
@@ -87,8 +93,10 @@ public class ZipTool extends AbstractCompressionHandler<ZipTool> {
      * @throws IllegalArgumentException If the specified .zip file to uncompress
      *             is not a file, or if the the specified destination is a file.
      */
+    // CHECKSTYLE:OFF
     @Override
     public ZipTool decompress(final File zipFile, final File destDir) throws CompressException {
+        // CHECKSTYLE:ON
         if (!zipFile.isFile() || !zipFile.canRead()) {
             throw new IllegalArgumentException(
                     "The specified resource to decompress is not a file or cannot be read : " + zipFile);
@@ -139,8 +147,8 @@ public class ZipTool extends AbstractCompressionHandler<ZipTool> {
             FileUtils.copyFile(zipFile, tempFile);
 
             zipOutputStream = new ZipArchiveOutputStream(tempFile);
-            zipInputStream = new ZipArchiveInputStream(new BufferedInputStream(
-                    new FileInputStream(zipFile), BUFFER_8192));
+            zipInputStream = new ZipArchiveInputStream(new BufferedInputStream(new FileInputStream(zipFile),
+                    BUFFER_8192));
 
             // First, let's read the already current tar entries contained into
             // the .zip file.
@@ -234,6 +242,11 @@ public class ZipTool extends AbstractCompressionHandler<ZipTool> {
     @Override
     public String getConventionalExtension() {
         return ZIP_EXTENSION;
+    }
+
+    @Override
+    protected final String getCompressorType() {
+        return InternalCompressorStreamFactory.ZIP;
     }
 
 }

@@ -1,0 +1,23 @@
+<FindBugsFilter>
+  <!-- Forget all JUnit test classes -->
+  <Match>
+    <Class name="~.*Test" />
+  </Match>
+  <!-- Allows the catch(Exception e) in the source code for all classes. -->
+  <Match>
+    <Bug code="REC" />
+  </Match>
+  <!-- Allows non static inner classes for the specified target entities (classes, methods). -->
+  <Match>
+    <Class name="net.paissad.paissadtools.ftp.impl.FtpToolImpl" />
+    <Method name="isFtpFile" params="java.lang.String" returns="boolean" />
+    <Method name="isFtpDir" params="java.lang.String" returns="boolean" />
+    <Method name="isFtpSymbolicLink" params="java.lang.String" returns="boolean" />
+    <Method name="isFtpEmptyDir" params="java.lang.String" returns="boolean" />
+    <Bug pattern="SIC_INNER_SHOULD_BE_STATIC_ANON" />
+  </Match>
+  <!-- Skip the warning : Transient field that isn't set by deserialization -->
+  <Match>
+    <Bug pattern="SE_TRANSIENT_FIELD_NOT_RESTORED" />
+  </Match>
+</FindBugsFilter>

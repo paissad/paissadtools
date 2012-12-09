@@ -1,9 +1,16 @@
 package net.paissad.paissadtools.mail;
 
 import net.paissad.paissadtools.api.AbstractToolService;
+import net.paissad.paissadtools.api.ITool;
+import net.paissad.paissadtools.api.IToolService;
 import net.paissad.paissadtools.exception.IToolServiceException;
 import net.paissad.paissadtools.exception.IToolServiceRuntimeException;
 
+/**
+ * The {@link IToolService} implementation for the mail {@link ITool}.
+ * 
+ * @author paissad
+ */
 public class MailToolService extends AbstractToolService<MailTool, MailToolSettings> {
 
     private boolean ready;

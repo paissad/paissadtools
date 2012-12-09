@@ -6,9 +6,8 @@ import net.paissad.paissadtools.ssh.impl.SshJsch;
 
 /**
  * @author paissad
- * @since 0.1
  */
-class SshFactory {
+final class SshFactory {
 
     private SshFactory() {
     }

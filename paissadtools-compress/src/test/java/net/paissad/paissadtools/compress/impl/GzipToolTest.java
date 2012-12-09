@@ -6,7 +6,7 @@ import java.util.List;
 
 import net.paissad.paissadtools.compress.TestConstants;
 import net.paissad.paissadtools.compress.TestUtil;
-import net.paissad.paissadtools.compress.api.CompressException;
+import net.paissad.paissadtools.compress.exception.CompressException;
 import net.paissad.paissadtools.util.CommonUtils;
 
 import org.apache.commons.io.FileUtils;

@@ -1,5 +1,6 @@
 package net.paissad.paissadtools.http;
 
+import java.io.Serializable;
 import java.util.Map;
 
 import lombok.Getter;
@@ -31,13 +32,21 @@ public class HttpToolSettings implements IToolSettings {
     private Map<String, String> parameters;
     private Map<String, String> headers;
 
+    /**
+     * Represents the HTTP proxy settings.
+     * 
+     * @author paissad
+     */
     @Getter
     @Setter
-    public class ProxySettings {
-        private String user;
-        private String pass;
-        private String host;
-        private int    port;
+    public static class ProxySettings implements Serializable {
+
+        private static final long serialVersionUID = 1L;
+
+        private String            user;
+        private String            pass;
+        private String            host;
+        private int               port;
     }
 
 }

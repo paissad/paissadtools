@@ -6,6 +6,6 @@ package net.paissad.paissadtools.ssh;
  */
 public interface SshErrorEvent {
 
-    public Object getReason();
+    Object getReason();
 
 }

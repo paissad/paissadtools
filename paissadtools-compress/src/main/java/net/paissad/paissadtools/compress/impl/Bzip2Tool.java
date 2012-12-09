@@ -11,10 +11,12 @@ import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.List;
 
-import net.paissad.paissadtools.compress.api.CompressException;
+import net.paissad.paissadtools.compress.CompressionTool;
 import net.paissad.paissadtools.compress.api.CompressionHandler;
+import net.paissad.paissadtools.compress.exception.CompressException;
 import net.paissad.paissadtools.util.CommonUtils;
 
+import org.apache.commons.compress.compressors.CompressorStreamFactory;
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorOutputStream;
 import org.apache.commons.io.IOUtils;
@@ -23,9 +25,11 @@ import org.apache.commons.io.IOUtils;
  * bzip2 / bunzip tool.
  * 
  * @author paissad
+ * @see CompressionTool
  */
 public class Bzip2Tool extends AbstractCompressionHandler<Bzip2Tool> {
 
+    /** BZIP2 default extension. */
     public static final String BZIP2_EXTENSION = ".bzip2";
 
     /**
@@ -35,8 +39,10 @@ public class Bzip2Tool extends AbstractCompressionHandler<Bzip2Tool> {
      * <li>can only compress files, not directories.</li>
      * </ul>
      */
+    // CHECKSTYLE:OFF
     @Override
     public Bzip2Tool compress(final File from, final File baseDir, final File to) throws CompressException {
+        // CHECKSTYLE:ON
         if (!from.isFile()) {
             throw new IllegalArgumentException("BZIP2 can compress only files.");
         }
@@ -62,8 +68,10 @@ public class Bzip2Tool extends AbstractCompressionHandler<Bzip2Tool> {
      *             a file, or if the specified destination is an existent
      *             directory.
      */
+    // CHECKSTYLE:OFF
     @Override
     public Bzip2Tool decompress(final File bzipFile, final File destFile) throws CompressException {
+        // CHECKSTYLE:ON
         if (!bzipFile.isFile()) {
             throw new IllegalArgumentException("The specified resource to decompress is not a file : " + bzipFile);
         }
@@ -73,7 +81,8 @@ public class Bzip2Tool extends AbstractCompressionHandler<Bzip2Tool> {
         BZip2CompressorInputStream in = null;
         OutputStream out = null;
         try {
-            in = new BZip2CompressorInputStream(new BufferedInputStream(new FileInputStream(bzipFile), BUFFER_8192));
+            in = new BZip2CompressorInputStream(new BufferedInputStream(new FileInputStream(bzipFile), BUFFER_8192),
+                    true);
             out = new BufferedOutputStream(new FileOutputStream(destFile), BUFFER_8192);
             IOUtils.copy(in, out);
             return this;
@@ -105,6 +114,11 @@ public class Bzip2Tool extends AbstractCompressionHandler<Bzip2Tool> {
     }
 
     @Override
+    public String getConventionalExtension() {
+        return BZIP2_EXTENSION;
+    }
+
+    @Override
     public boolean canCompressDirectories() {
         return false;
     }
@@ -115,8 +129,8 @@ public class Bzip2Tool extends AbstractCompressionHandler<Bzip2Tool> {
     }
 
     @Override
-    public String getConventionalExtension() {
-        return BZIP2_EXTENSION;
+    protected final String getCompressorType() {
+        return CompressorStreamFactory.BZIP2;
     }
 
 }

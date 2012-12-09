@@ -15,11 +15,11 @@ import lombok.Getter;
 @Getter
 public class HttpToolResponse implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private static final long           serialVersionUID = 1L;
 
-    private final int         statusCode;
-    private final String      statusMessage;
-    private final InputStream responseBody;
+    private final int                   statusCode;
+    private final String                statusMessage;
+    private final transient InputStream responseBody;
 
     public HttpToolResponse(final int statusCode, final String statusMessage, final InputStream responseBody) {
         this.statusCode = statusCode;

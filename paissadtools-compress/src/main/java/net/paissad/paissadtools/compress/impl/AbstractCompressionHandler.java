@@ -1,17 +1,57 @@
 package net.paissad.paissadtools.compress.impl;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.regex.Pattern;
 
-import net.paissad.paissadtools.compress.api.CompressException;
 import net.paissad.paissadtools.compress.api.CompressionHandler;
+import net.paissad.paissadtools.compress.exception.CompressException;
+import net.paissad.paissadtools.compress.impl.internal.InternalCompressorStreamFactory;
+import net.paissad.paissadtools.util.CommonUtils;
 
+import org.apache.commons.compress.compressors.CompressorOutputStream;
+import org.apache.commons.io.IOUtils;
+
+/**
+ * Abstract implementation of {@link CompressionHandler}.
+ * 
+ * @author paissad
+ * 
+ * @param <T>
+ */
 abstract class AbstractCompressionHandler<T extends CompressionHandler<T>> implements CompressionHandler<T> {
 
     protected static final String FILE_SEP = File.separator;
+
+    /**
+     * @throws IllegalArgumentException - If the specified InputStream is
+     *             <code>null</code>.
+     */
+    @Override
+    public InputStream compressStream(final InputStream in) throws IllegalArgumentException, CompressException {
+
+        if (in == null) throw new IllegalArgumentException("The stream cannot be null.");
+        OutputStream out = null;
+        CompressorOutputStream cos = null;
+        try {
+            out = new ByteArrayOutputStream(BUFFER_8192);
+            IOUtils.copy(in, out);
+            cos = new InternalCompressorStreamFactory().createCompressorOutputStream(this.getCompressorType(), out);
+            // FIXME
+            return null;
+
+        } catch (Exception e) {
+            throw new CompressException("Error while compressing stream.", e);
+        } finally {
+            CommonUtils.closeAllStreamsQuietly(out, cos);
+        }
+    }
 
     @Override
     public T compress(final File from) throws CompressException {
@@ -24,9 +64,25 @@ abstract class AbstractCompressionHandler<T extends CompressionHandler<T>> imple
         return this.compress(from, from.getParentFile(), to);
     }
 
+    /**
+     * @throws IllegalArgumentException - If the specified InputStream is
+     *             <code>null</code>.
+     */
+    @Override
+    public InputStream decompressStream(final InputStream in) throws IllegalArgumentException, CompressException {
+
+        if (in == null) throw new IllegalArgumentException("The stream cannot be null.");
+        try {
+            return new InternalCompressorStreamFactory().createCompressorInputStream(this.getCompressorType(), in);
+        } catch (Exception e) {
+            throw new CompressException("Error while decompressing the stream.");
+        }
+    }
+
     @Override
     public T decompress(final File from) throws CompressException {
-        if (!from.getName().toLowerCase().endsWith(this.getConventionalExtension().toLowerCase())) {
+        if (!from.getName().toLowerCase(Locale.ENGLISH)
+                .endsWith(this.getConventionalExtension().toLowerCase(Locale.ENGLISH))) {
             throw new IllegalArgumentException("Unknown file type, unable to uncompress. The expected extension is '"
                     + this.getConventionalExtension() + "'");
         }
@@ -34,8 +90,8 @@ abstract class AbstractCompressionHandler<T extends CompressionHandler<T>> imple
         if (this.canCompressDirectories()) {
             destination = from.getParentFile();
         } else {
-            final String destName = from.getName()
-                    .replaceAll("(?i)" + Pattern.quote(this.getConventionalExtension()) + "$", "");
+            final String destName = from.getName().replaceAll(
+                    "(?i)" + Pattern.quote(this.getConventionalExtension()) + "$", "");
             destination = new File(from.getParentFile(), destName);
         }
         return this.decompress(from, destination);
@@ -93,17 +149,17 @@ abstract class AbstractCompressionHandler<T extends CompressionHandler<T>> imple
         }
         final String baseDirPath = baseDir.getCanonicalPath();
         final String filePath = file.getCanonicalPath();
-        String result = "";
+        final StringBuilder sb = new StringBuilder();
         if ((filePath.startsWith(baseDirPath))) {
-            result = filePath.substring(baseDirPath.length());
+            sb.append(filePath.substring(baseDirPath.length()));
         } else {
             final int numberOfDoubleDots = baseDirPath.split(Pattern.quote(FILE_SEP)).length;
             for (int i = 0; i < numberOfDoubleDots; i++) {
-                result += "/..";
+                sb.append("/..");
             }
-            result += filePath;
+            sb.append(filePath);
         }
-        result = this.changeAllBackslashToSlash(result);
+        String result = this.changeAllBackslashToSlash(sb.toString());
         result = result.replaceFirst("^/", "");
         return result;
     }
@@ -111,5 +167,7 @@ abstract class AbstractCompressionHandler<T extends CompressionHandler<T>> imple
     protected String changeAllBackslashToSlash(final String path) {
         return path.replaceAll("\\\\", "/");
     }
+
+    protected abstract String getCompressorType();
 
 }

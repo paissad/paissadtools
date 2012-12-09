@@ -1,14 +1,12 @@
-package net.paissad.paissadtools.compress.api;
+package net.paissad.paissadtools.compress;
 
 import java.io.File;
-import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.regex.Pattern;
 
-import org.apache.commons.io.FileUtils;
-
-import net.paissad.paissadtools.util.CommonUtils;
+import net.paissad.paissadtools.api.ITool;
+import net.paissad.paissadtools.compress.api.CompressionHandler;
+import net.paissad.paissadtools.compress.api.CompressionHandlerFactory;
+import net.paissad.paissadtools.compress.exception.CompressException;
 
 /**
  * <p>
@@ -28,7 +26,7 @@ import net.paissad.paissadtools.util.CommonUtils;
  * @see CompressionHandlerFactory
  * @author paissad
  */
-public class CompressionTool {
+public class CompressionTool implements ITool {
 
     private final CompressionHandlerFactory toolFactory;
 
@@ -51,7 +49,6 @@ public class CompressionTool {
      * @param to - The compressed file to create.
      * @throws CompressException
      * @see CompressionHandler#compress(File, File)
-     * @see CompressionHandlerFactory#getCompressionHandler(File)
      */
     public void compress(final File from, final File to) throws CompressException {
         this.smartCompress(from, from.getParentFile(), to);
@@ -73,40 +70,13 @@ public class CompressionTool {
      * @param to - The compressed file to create.
      * @throws CompressException
      * @see CompressionHandler#compress(File, File, File)
-     * @see CompressionHandlerFactory#getCompressionHandler(File)
      */
     public void compress(final File from, final File baseDir, final File to) throws CompressException {
         this.smartCompress(from, baseDir, to);
     }
 
     private void smartCompress(final File from, final File baseDir, final File to) throws CompressException {
-
-        // XXX xxx.tar.gz.zip
-        final List<String> knownExtensions = this.retrieveKnownExtensions(to.getName());
-        Collections.reverse(knownExtensions);
-        this.toolFactory.getCompressionHandler(to.getName()).compress(from, baseDir, to);
-
-        boolean isLastExtension = false;
-        File currentResourceToCompress = null;
-
-        try {
-            for (int i = 0; i < knownExtensions.size(); i++) {
-
-                final String currentExtension = knownExtensions.get(i);
-                currentResourceToCompress = new File(CommonUtils.createTempFilename(
-                        "compressiontool_compress_", currentExtension));
-                FileUtils.copyFile(from, currentResourceToCompress);
-
-                if (isLastExtension) {
-                    this.toolFactory.getCompressionHandler(currentExtension)
-                            .compress(currentResourceToCompress, baseDir, to);
-                } else {
-
-                }
-            }
-        } catch (Exception e) {
-            throw new CompressException(e);
-        }
+        // FIXME implement the code
     }
 
     /**
@@ -154,8 +124,7 @@ public class CompressionTool {
      * @see CompressionHandler#addResources(File, List)
      * @see CompressionHandlerFactory#getCompressionHandler(String)
      */
-    public void addResources(final File compressedFile, final List<File> resourcesToAdd)
-            throws CompressException {
+    public void addResources(final File compressedFile, final List<File> resourcesToAdd) throws CompressException {
         this.toolFactory.getCompressionHandler(compressedFile.getName()).addResources(compressedFile, resourcesToAdd);
     }
 
@@ -200,56 +169,6 @@ public class CompressionTool {
      */
     public List<String> list(final File compressedFile) throws CompressException {
         return this.toolFactory.getCompressionHandler(compressedFile.getName()).list(compressedFile);
-    }
-
-    private boolean filenameEndsWithSupportedExtension(final String filename) {
-        for (final String extension : CompressionHandlerFactory.getSupportedExtensions()) {
-            if (filename.endsWith(extension)) return true;
-        }
-        return false;
-    }
-
-    private String stripAllKnownConsecutiveKnownExtensions(final String compressedFilename) {
-        String result = compressedFilename;
-        final LinkedList<String> extensions = this.retrieveKnownExtensions(compressedFilename);
-        for (int i = 0; i < extensions.size(); i++) {
-            final String currentExtension = extensions.get(i);
-            result = result.replaceAll(Pattern.quote(currentExtension) + "$", "");
-        }
-        return result;
-    }
-
-    /**
-     * If for example the filename is "/tmp/tool.tar.gz.bzip2.xz", the result
-     * will be ---> [.xz, .bzip2, .gz, .tar]
-     * 
-     * @param compressedFilename
-     * @return
-     */
-    private LinkedList<String> retrieveKnownExtensions(final String compressedFilename) {
-        final LinkedList<String> result = new LinkedList<String>();
-        for (final String extension : CompressionHandlerFactory.getSupportedExtensions()) {
-            if (compressedFilename.endsWith(extension)) {
-                result.add(extension);
-                final String regex = Pattern.quote(extension) + "$";
-                result.addAll(retrieveKnownExtensions(compressedFilename.replaceAll(regex, "")));
-            }
-        }
-        return result;
-    }
-
-    /*
-     * XXX
-     */
-    public static void main(final String... args) throws Exception {
-        final CompressionTool tool = new CompressionTool();
-        final File from = new File("/tmp/bb");
-        final File to = new File("/tmp/tool.tar.gz.bzip2.xz");
-        // tool.compress(from, to);
-        for (final String s : tool.retrieveKnownExtensions(to.getName())) {
-            System.out.println(s);
-        }
-        System.out.println(tool.stripAllKnownConsecutiveKnownExtensions(to.getName()));
     }
 
 }

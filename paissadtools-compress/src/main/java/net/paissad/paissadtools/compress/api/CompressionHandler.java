@@ -1,11 +1,39 @@
 package net.paissad.paissadtools.compress.api;
 
 import java.io.File;
+import java.io.InputStream;
 import java.util.List;
 
+import net.paissad.paissadtools.compress.exception.CompressException;
+
+/**
+ * This interface contains methods that help to process some common compression
+ * operations.
+ * 
+ * @author paissad
+ * 
+ * @param <T>
+ */
 public interface CompressionHandler<T extends CompressionHandler<T>> {
 
+    /** Buffer size of 8192. */
     int BUFFER_8192 = 8192;
+
+    /**
+     * <p>
+     * Compress the specified InputStream.
+     * </p>
+     * <p>
+     * <b>NOTE :</b> The InputStream must support marks, like
+     * BufferedInputStream
+     * </p>
+     * 
+     * @param in - The InputStream to compress.
+     * @return The compressed InputStream.
+     * @throws CompressException If an error occurs while compressing the
+     *             stream.
+     */
+    InputStream compressStream(final InputStream in) throws CompressException;
 
     /**
      * <p>
@@ -30,7 +58,7 @@ public interface CompressionHandler<T extends CompressionHandler<T>> {
      * 
      * @param from - The resource to compress (file or directory)
      * @return This instance for chaining purposes.
-     * @throws CompressException
+     * @throws CompressException If an error occurs while compressing the file.
      * @see #compress(File, File, File)
      */
     T compress(final File from) throws CompressException;
@@ -52,7 +80,7 @@ public interface CompressionHandler<T extends CompressionHandler<T>> {
      * @param from - The resource to compress (file or directory)
      * @param to - The output file.
      * @return This instance for chaining purposes.
-     * @throws CompressException
+     * @throws CompressException If an error occurs while compressing the file.
      * @see #compress(File, File, File)
      */
     T compress(final File from, final File to) throws CompressException;
@@ -71,10 +99,20 @@ public interface CompressionHandler<T extends CompressionHandler<T>> {
      * @param baseDir - The directory from which to compress the resource.
      * @param to - The output file.
      * @return This instance for chaining purposes.
-     * @throws CompressException
+     * @throws CompressException If an error occurs while compressing the file.
      * @see #compress(File, File)
      */
     T compress(final File from, final File baseDir, final File to) throws CompressException;
+
+    /**
+     * Uncompress an InputStream.
+     * 
+     * @param in - The InputStream to uncompress.
+     * @return The uncompressed InputStream.
+     * @throws CompressException If an error occurs while uncompressing the
+     *             stream.
+     */
+    InputStream decompressStream(final InputStream in) throws CompressException;
 
     /**
      * <p>
@@ -89,7 +127,7 @@ public interface CompressionHandler<T extends CompressionHandler<T>> {
      * 
      * @param from - The file to uncompress.
      * @return This instance for chaining purposes.
-     * @throws CompressException
+     * @throws CompressException If an error occurs while compressing the file.
      * @throws IllegalArgumentException If the specified file to uncompress does
      *             not end with the expected extension.
      */
@@ -101,7 +139,7 @@ public interface CompressionHandler<T extends CompressionHandler<T>> {
      * @param from - The file to uncompress.
      * @param destination - Where to put the uncompressed resources.
      * @return This instance for chaining purposes.
-     * @throws CompressException
+     * @throws CompressException If an error occurs while compressing the file.
      */
     T decompress(final File from, final File destination) throws CompressException;
 
@@ -122,7 +160,7 @@ public interface CompressionHandler<T extends CompressionHandler<T>> {
      *            new resources.
      * @param resourcesToAdd - The resources (files and/or directories) to add.
      * @return This instance for chaining purposes.
-     * @throws CompressException
+     * @throws CompressException If an error occurs while adding the resources.
      * @see #addResources(File, File, List)
      */
     T addResources(final File compressedFile, final List<File> resourcesToAdd) throws CompressException;
@@ -141,7 +179,7 @@ public interface CompressionHandler<T extends CompressionHandler<T>> {
      * @param baseDir - The directory from which to add the resources.
      * @param resourcesToAdd - The resources (files and/or directories) to add.
      * @return This instance for chaining purposes.
-     * @throws CompressException
+     * @throws CompressException If an error occurs while adding the resources.
      * @see #addResources(File, List)
      */
     T addResources(final File compressedFile, final File baseDir, final List<File> resourcesToAdd)
@@ -150,14 +188,14 @@ public interface CompressionHandler<T extends CompressionHandler<T>> {
     /**
      * List the content of the specified compressed file.
      * 
-     * @param compressedFile
+     * @param compressedFile - The file we want to list the contents.
      * @return The contents.
-     * @throws CompressException
+     * @throws CompressException If an error occurs while listing the contents.
      */
     List<String> list(final File compressedFile) throws CompressException;
 
     /**
-     * @param clazz
+     * @param clazz - The class
      * @return Another type of compression handler.
      */
     CompressionHandler<?> getAdapter(final Class<CompressionHandler<?>> clazz);

@@ -28,7 +28,7 @@ public class SshCommand implements Serializable {
         this(command, 0);
     }
 
-    public SshCommand(final String command, int timeout) {
+    public SshCommand(final String command, final int timeout) {
         this.command = command;
         this.timeout = timeout;
     }

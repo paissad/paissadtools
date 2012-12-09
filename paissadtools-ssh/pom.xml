@@ -5,7 +5,7 @@
   <parent>
     <artifactId>paissadtools</artifactId>
     <groupId>net.paissad.paissadtools</groupId>
-    <version>0.1</version>
+    <version>0.0.1</version>
     <relativePath>..</relativePath>
   </parent>
   <artifactId>paissadtools-ssh</artifactId>
@@ -15,12 +15,12 @@
     <dependency>
       <groupId>net.paissad.paissadtools</groupId>
       <artifactId>paissadtools-api</artifactId>
-      <version>0.1</version>
+      <version>0.0.1</version>
     </dependency>
     <dependency>
       <groupId>net.paissad.paissadtools</groupId>
       <artifactId>paissadtools-utils</artifactId>
-      <version>0.1</version>
+      <version>0.0.1</version>
     </dependency>
     <dependency>
       <groupId>com.jcraft</groupId>
@@ -51,4 +51,5 @@
     </dependency>
   </dependencies>
 
+  <name>PaissadTools-Ssh</name>
 </project>

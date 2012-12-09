@@ -1,5 +1,12 @@
 package net.paissad.paissadtools.exception;
 
+import net.paissad.paissadtools.api.IToolService;
+
+/**
+ * Exception generally thrown when a problem occurs with a {@link IToolService}.
+ * 
+ * @author paissad
+ */
 public class IToolServiceException extends Exception {
 
     private static final long serialVersionUID = 1L;
@@ -8,15 +15,15 @@ public class IToolServiceException extends Exception {
         this("");
     }
 
-    public IToolServiceException(String message) {
+    public IToolServiceException(final String message) {
         super(message);
     }
 
-    public IToolServiceException(Throwable cause) {
+    public IToolServiceException(final Throwable cause) {
         super(cause);
     }
 
-    public IToolServiceException(String message, Throwable cause) {
+    public IToolServiceException(final String message, final Throwable cause) {
         super(message, cause);
     }
 

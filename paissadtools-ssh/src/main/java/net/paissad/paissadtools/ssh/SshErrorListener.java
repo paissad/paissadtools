@@ -8,5 +8,5 @@ import java.io.Serializable;
  */
 public interface SshErrorListener extends Serializable {
 
-    public void onError(SshErrorEvent sshErrorEvent);
+    void onError(SshErrorEvent sshErrorEvent);
 }

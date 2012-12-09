@@ -10,6 +10,7 @@ import net.paissad.paissadtools.ssh.SshCommand;
 import net.paissad.paissadtools.ssh.SshToolSettings;
 import net.paissad.paissadtools.util.CommonUtils;
 
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,15 +25,13 @@ import ch.ethz.ssh2.StreamGobbler;
  */
 public class SshGanymed extends AbstractSsh {
 
-    private static final long serialVersionUID = 1L;
+    private static Logger logger = LoggerFactory.getLogger(SshGanymed.class);
 
-    private static Logger     logger           = LoggerFactory.getLogger(SshGanymed.class);
+    private Connection    sshConnection;
 
-    private Connection        sshConnection;
+    private KnownHosts    database;
 
-    private KnownHosts        database;
-
-    public SshGanymed(SshToolSettings sshSettings) {
+    public SshGanymed(final SshToolSettings sshSettings) {
         super(sshSettings);
         this.database = new KnownHosts();
     }
@@ -41,7 +40,7 @@ public class SshGanymed extends AbstractSsh {
     public boolean connect() {
         try {
             this.initialize();
-            boolean isAuthenticated = this.sshConnection.authenticateWithPassword(
+            final boolean isAuthenticated = this.sshConnection.authenticateWithPassword(
                     this.getSshSettings().getUser(), this.getSshSettings().getPassword());
             if (!isAuthenticated) throw new IllegalStateException("Authentication failed !");
             return true;
@@ -56,8 +55,8 @@ public class SshGanymed extends AbstractSsh {
     @Override
     public boolean connectByUsingPublicKey() {
         try {
-            boolean isAuthenticated = this.sshConnection.authenticateWithPublicKey(
-                    this.getSshSettings().getUser(), this.getPemFile(), this.getSshSettings().getPassPhrase());
+            final boolean isAuthenticated = this.sshConnection.authenticateWithPublicKey(this.getSshSettings()
+                    .getUser(), this.getPemFile(), this.getSshSettings().getPassPhrase());
             if (!isAuthenticated) throw new IllegalStateException("Authentication failed !");
             return true;
 
@@ -69,23 +68,14 @@ public class SshGanymed extends AbstractSsh {
     }
 
     @Override
-    public boolean executeCommands(List<SshCommand> sshCommands, OutputStream stdout) {
-        return this.executeCommands(sshCommands, stdout, null);
-    }
-
-    @Override
-    public boolean executeCommands(List<SshCommand> sshCommands, OutputStream stdout, OutputStream stderr) {
-        return this.executeCommands(sshCommands, stdout, stderr, false);
-    }
-
-    @Override
-    public boolean executeCommands(List<SshCommand> sshCommands, OutputStream stdout, OutputStream stderr,
-            boolean useShell) {
+    public boolean executeCommands(final List<SshCommand> sshCommands, final OutputStream stdout,
+            final OutputStream stderr, final boolean useShell) {
 
         Session session = null;
         InputStream out = null;
         InputStream err = null;
-        OutputStream stdin = null;
+        // FIXME : why is the stdin variable not used ?
+        final OutputStream stdin = null;
 
         try {
             logger.debug("({}) Execution of the specified ssh commands ...", this.getImplementationName());
@@ -94,8 +84,8 @@ public class SshGanymed extends AbstractSsh {
                 if (sshCommand == null || sshCommand.getCommand() == null || sshCommand.getCommand().trim().isEmpty()) {
                     continue;
                 }
-                logger.debug("-- ({}) Executing the ssh command --> {}",
-                        this.getImplementationName(), sshCommand.getCommand());
+                logger.debug("-- ({}) Executing the ssh command --> {}", this.getImplementationName(),
+                        sshCommand.getCommand());
 
                 session = this.sshConnection.openSession();
 
@@ -103,10 +93,9 @@ public class SshGanymed extends AbstractSsh {
                 out = new StreamGobbler(session.getStdout());
                 err = new StreamGobbler(session.getStderr());
 
-                CommonUtils.copyStream(out, stdout);
-                CommonUtils.copyStream(err, stderr);
+                IOUtils.copy(out, stdout);
+                IOUtils.copy(err, stderr);
                 session.close();
-
             }
 
             logger.debug("({}) All ssh commands executed successfully !", this.getImplementationName());
@@ -143,7 +132,7 @@ public class SshGanymed extends AbstractSsh {
     }
 
     @Override
-    protected void configureCompression(boolean useCompression) {
+    protected void configureCompression(final boolean useCompression) {
         if (useCompression) {
             logger.warn("Compression is not supported by SSH-GANYMED implementation.");
         }
@@ -161,20 +150,23 @@ public class SshGanymed extends AbstractSsh {
         }
     }
 
-    private class SimpleVerifier implements ServerHostKeyVerifier {
+    /**
+     * @author paissad
+     */
+    private static class SimpleVerifier implements ServerHostKeyVerifier {
 
         private KnownHosts db;
 
-        public SimpleVerifier(KnownHosts database) {
+        public SimpleVerifier(final KnownHosts database) {
             if (database == null) throw new IllegalArgumentException("The database cannot be null.");
             this.db = database;
         }
 
         @Override
-        public boolean verifyServerHostKey(String hostname, int port, String serverHostKeyAlgorithm,
-                byte[] serverHostKey) throws Exception {
+        public boolean verifyServerHostKey(final String hostname, final int port, final String serverHostKeyAlgorithm,
+                final byte[] serverHostKey) throws Exception {
 
-            int result = this.db.verifyHostkey(hostname, serverHostKeyAlgorithm, serverHostKey);
+            final int result = this.db.verifyHostkey(hostname, serverHostKeyAlgorithm, serverHostKey);
             switch (result) {
 
             case KnownHosts.HOSTKEY_IS_OK:

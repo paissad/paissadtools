@@ -1,19 +1,23 @@
 package net.paissad.paissadtools.ssh;
 
 import java.io.File;
+import java.io.OutputStream;
+import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * @author paissad
+ */
 @Getter
 @Setter
 public abstract class AbstractSsh implements SshTool {
 
-    protected static final File SSH_USER_DIR     = new File(System.getProperty("user.home"), ".ssh");
+    /** The default home ssh user directory. */
+    protected static final File SSH_USER_DIR = new File(System.getProperty("user.home"), ".ssh");
 
-    private static final long   serialVersionUID = 1L;
-
-    private SshToolSettings         sshSettings;
+    private SshToolSettings     sshSettings;
 
     private SshErrorListener    errorListener;
 
@@ -21,13 +25,24 @@ public abstract class AbstractSsh implements SshTool {
         this.sshSettings = sshSettings;
     }
 
+    @Override
+    public boolean executeCommands(final List<SshCommand> sshCommands, final OutputStream stdout) {
+        return this.executeCommands(sshCommands, stdout, null);
+    }
+
+    @Override
+    public boolean executeCommands(final List<SshCommand> sshCommands, final OutputStream stdout,
+            final OutputStream stderr) {
+        return this.executeCommands(sshCommands, stdout, stderr, false);
+    }
+
     protected File getKnownHostsFile() {
         return new File(SSH_USER_DIR, "known_hosts");
     }
 
     protected File getPemFile() {
-        final File defaultKeyFile = new File(SSH_USER_DIR, "id_rsa").isFile()
-                ? new File(SSH_USER_DIR, "id_rsa") : new File(SSH_USER_DIR, "id_dsa");
+        final File defaultKeyFile = new File(SSH_USER_DIR, "id_rsa").isFile() ? new File(SSH_USER_DIR, "id_rsa")
+                : new File(SSH_USER_DIR, "id_dsa");
 
         final String pemFilePath = this.getSshSettings().getProperties().getProperty(SshToolSettings.PROPS_KEYFILE);
         File pemFile = null;
@@ -42,7 +57,7 @@ public abstract class AbstractSsh implements SshTool {
     /**
      * Executes the current {@link SshErrorListener} if it is not <tt>null</tt>.
      * 
-     * @param sshErrorEvent
+     * @param sshErrorEvent - The error event.
      */
     protected void executeErrorListener(final SshErrorEvent sshErrorEvent) {
         if (sshErrorEvent == null) return;

@@ -5,10 +5,11 @@
   <parent>
     <artifactId>paissadtools</artifactId>
     <groupId>net.paissad.paissadtools</groupId>
-    <version>0.1</version>
+    <version>0.0.1</version>
     <relativePath>..</relativePath>
   </parent>
   <artifactId>paissadtools-api</artifactId>
   <description>Contains some interfaces that can be implemented by other modules relative to the project or for other projects.</description>
 
+  <name>PaissadTools-API</name>
 </project>

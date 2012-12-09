@@ -9,7 +9,7 @@ public class SimpleSshErrorEvent implements SshErrorEvent {
 
     private Exception exception;
 
-    public SimpleSshErrorEvent(Exception e) {
+    public SimpleSshErrorEvent(final Exception e) {
         this.exception = e;
     }
 
