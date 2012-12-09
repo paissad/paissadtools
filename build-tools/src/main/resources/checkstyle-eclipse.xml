@@ -132,7 +132,9 @@
     <module name="ClassDataAbstractionCoupling">
       <property name="max" value="30"/>
     </module>
-    <module name="ClassFanOutComplexity"/>
+    <module name="ClassFanOutComplexity">
+      <property name="max" value="25"/>
+    </module>
     <module name="CyclomaticComplexity"/>
     <module name="JavaNCSS">
       <property name="methodMaximum" value="100"/>

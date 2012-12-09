@@ -6,13 +6,13 @@ import net.paissad.paissadtools.api.ITool;
 import net.paissad.paissadtools.api.IToolSettings;
 
 /**
- * Represents the mail settings to use using the mail {@link ITool}.
+ * This class holds the SMTP settings to use using the mail {@link ITool}.
  * 
  * @author paissad
  */
 @Getter
 @Setter
-public class MailToolSettings implements IToolSettings {
+public class MailToolSMTPSettings implements IToolSettings {
 
     private static final long serialVersionUID = 1L;
 
@@ -26,7 +26,7 @@ public class MailToolSettings implements IToolSettings {
     /** If set to true, then receive an acknowledgment after sending the mail. */
     private boolean           autoAcknowledge;
 
-    public MailToolSettings() {
+    public MailToolSMTPSettings() {
         // By default, do not ask for an acknowledgment when sending a mail.
         this.autoAcknowledge = false;
     }

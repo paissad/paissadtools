@@ -6,6 +6,7 @@ import java.io.OutputStream;
 
 import net.paissad.paissadtools.api.ITool;
 import net.paissad.paissadtools.ftp.FtpToolSettings.FTP_TRANSFER_MODE;
+import net.paissad.paissadtools.ftp.exception.FtpToolException;
 
 /**
  * The top interface for FTP tool.

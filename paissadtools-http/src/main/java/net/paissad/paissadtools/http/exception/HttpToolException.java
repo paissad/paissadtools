@@ -1,6 +1,7 @@
-package net.paissad.paissadtools.http;
+package net.paissad.paissadtools.http.exception;
 
 import net.paissad.paissadtools.api.ITool;
+import net.paissad.paissadtools.http.HttpTool;
 
 /**
  * This exception is thrown by the HTTP {@link ITool} -> {@link HttpTool}.

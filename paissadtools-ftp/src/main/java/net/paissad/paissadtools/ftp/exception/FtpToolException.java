@@ -1,13 +1,13 @@
-package net.paissad.paissadtools.ftp;
+package net.paissad.paissadtools.ftp.exception;
 
-import net.paissad.paissadtools.exception.IToolServiceException;
+import net.paissad.paissadtools.api.IToolException;
 
 /**
  * This exception is thrown by the FTP Tool.
  * 
  * @author paissad
  */
-public class FtpToolException extends IToolServiceException {
+public class FtpToolException extends IToolException {
 
     private static final long serialVersionUID = 1L;
 

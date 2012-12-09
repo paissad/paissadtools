@@ -5,7 +5,7 @@
     This configuration file was written by the eclipse-cs plugin configuration editor
 -->
 <!--
-    Checkstyle-Configuration: checkstyle_paissadtools
+    Checkstyle-Configuration: checkstyle_paissadtools_maven
     Description: none
 -->
 <module name="Checker">
@@ -132,7 +132,9 @@
     <module name="ClassDataAbstractionCoupling">
       <property name="max" value="30"/>
     </module>
-    <module name="ClassFanOutComplexity"/>
+    <module name="ClassFanOutComplexity">
+      <property name="max" value="25"/>
+    </module>
     <module name="CyclomaticComplexity"/>
     <module name="JavaNCSS">
       <property name="methodMaximum" value="100"/>

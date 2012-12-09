@@ -11,9 +11,9 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 
 import net.paissad.paissadtools.ftp.FtpTool;
-import net.paissad.paissadtools.ftp.FtpToolException;
 import net.paissad.paissadtools.ftp.FtpToolSettings;
 import net.paissad.paissadtools.ftp.FtpToolSettings.FTP_TRANSFER_MODE;
+import net.paissad.paissadtools.ftp.exception.FtpToolException;
 import net.paissad.paissadtools.util.CommonUtils;
 
 import org.apache.commons.io.FileUtils;

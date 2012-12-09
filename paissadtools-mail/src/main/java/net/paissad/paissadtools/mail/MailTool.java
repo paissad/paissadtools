@@ -27,56 +27,51 @@ import javax.mail.internet.MimeMultipart;
 import lombok.Getter;
 import lombok.Setter;
 import net.paissad.paissadtools.api.ITool;
+import net.paissad.paissadtools.mail.exception.MailToolException;
 import net.paissad.paissadtools.util.CommonUtils;
 
 /**
  * 
  * @author paissad
  */
-@Getter
-@Setter
 public class MailTool implements ITool {
 
     /*
      * http://java.sun.com/developer/onlineTraining/JavaMail/contents.html
      */
 
-    private static final String SMTP_PROTOCOL  = "smtp";
-    private static final String SMTPS_PROTOCOL = "smtps";
+    private static final String        SMTP_PROTOCOL  = "smtp";
+    private static final String        SMTPS_PROTOCOL = "smtps";
 
-    private MailToolSettings    mailSettings;
+    @Getter
+    private final MailToolSMTPSettings smtpSettings;
 
-    private List<File>          attachements;
-    private String              subject;
-    private String              content;
-    private Set<String>         recipientsTO;
-    private Set<String>         recipientsCC;
-    private Set<String>         recipientsBCC;
+    @Getter
+    @Setter
+    private MailToolMessageSettings    messageSettings;
 
     // _________________________________________________________________________
 
     /**
-     * @param mailSettings
-     * @see #setRecipientsTO(Set)
-     * @see #setAttachements(List)
+     * @param smtpSettings - The SMTP settings.
+     * @throws IllegalArgumentException If the SMTP settings is
+     *             <code>null</code>.
      */
-    public MailTool(final MailToolSettings mailSettings) {
-        this(mailSettings, null, null);
+    public MailTool(final MailToolSMTPSettings smtpSettings) {
+        this(smtpSettings, null);
     }
 
     /**
-     * @param mailSettings
-     * @param subject - The subject of the mail.
-     * @param content - The content (body) of the mail. May be TEXT or HTML as
-     *            well.
-     * 
-     * @see #setRecipientsTO(Set)
-     * @see #setAttachements(List)
+     * @param smtpSettings - The SMTP settings.
+     * @param messageSettings - The message settings.
+     * @throws IllegalArgumentException If the SMTP settings is
+     *             <code>null</code>.
      */
-    public MailTool(final MailToolSettings mailSettings, final String subject, final String content) {
-        this.setMailSettings(mailSettings);
-        this.setSubject(subject);
-        this.setContent(content);
+    public MailTool(final MailToolSMTPSettings smtpSettings, final MailToolMessageSettings messageSettings)
+            throws IllegalArgumentException {
+        if (smtpSettings == null) throw new IllegalArgumentException("The SMTP settings cannot be null.");
+        this.smtpSettings = smtpSettings;
+        this.messageSettings = messageSettings;
     }
 
     // _________________________________________________________________________
@@ -84,10 +79,10 @@ public class MailTool implements ITool {
     /**
      * Sends the email to the recipients with no debugging messages.
      * 
-     * @throws MessagingException If an error occurs while sending the message.
+     * @throws MailToolException If an error occurs while sending the message.
      * @see #send(boolean)
      */
-    public void send() throws MessagingException {
+    public void send() throws MailToolException {
         this.send(false);
     }
 
@@ -95,11 +90,11 @@ public class MailTool implements ITool {
      * Sends the email to the recipients.
      * 
      * @param debug - Whether or not to debug the process.
-     * @throws MessagingException If an error occurs while sending the message.
+     * @throws MailToolException If an error occurs while sending the message.
      */
-    public void send(final boolean debug) throws MessagingException {
+    public void send(final boolean debug) throws MailToolException {
 
-        final String smtpUser = this.getMailSettings().getSmtpUser();
+        final String smtpUser = this.getSmtpSettings().getSmtpUser();
         if (!CommonUtils.assertNotBlank(smtpUser)) throw new IllegalArgumentException("The SMTP user is not set !");
 
         final Properties props = this.initializeSmtpProperties();
@@ -112,12 +107,12 @@ public class MailTool implements ITool {
             transport = mailSession.getTransport();
 
             final MimeMessage message = new MimeMessage(mailSession);
-            final String msgSubject = this.getSubject();
+            final String msgSubject = this.getMessageSettings().getSubject();
             message.setSubject(msgSubject);
             message.setSentDate(new Date());
 
             final MimeBodyPart htmlPart = new MimeBodyPart();
-            htmlPart.setContent(this.getContent(), "text/html; charset=utf-8");
+            htmlPart.setContent(this.getMessageSettings().getContent(), "text/html; charset=utf-8");
 
             final Multipart mp = new MimeMultipart();
             mp.addBodyPart(htmlPart);
@@ -128,14 +123,14 @@ public class MailTool implements ITool {
             message.setContent(mp);
 
             // Add the retrieved recipients to the Message object ...
-            this.addRecipients(message, this.getRecipientsTO(), Message.RecipientType.TO);
-            this.addRecipients(message, this.getRecipientsCC(), Message.RecipientType.CC);
-            this.addRecipients(message, this.getRecipientsBCC(), Message.RecipientType.BCC);
+            this.addRecipients(message, this.getMessageSettings().getRecipientsTO(), Message.RecipientType.TO);
+            this.addRecipients(message, this.getMessageSettings().getRecipientsCC(), Message.RecipientType.CC);
+            this.addRecipients(message, this.getMessageSettings().getRecipientsBCC(), Message.RecipientType.BCC);
 
             message.setFrom(new InternetAddress(smtpUser, true));
 
             // Set the acknowledgment ...
-            if (this.getMailSettings().isAutoAcknowledge()) {
+            if (this.getSmtpSettings().isAutoAcknowledge()) {
                 message.setHeader("Disposition-Notification-To", smtpUser);
             }
 
@@ -152,13 +147,19 @@ public class MailTool implements ITool {
             // Save all settings.
             message.saveChanges();
 
-            transport.connect(this.getMailSettings().getSmtpHost(), this.getMailSettings().getSmtpPort(), this
-                    .getMailSettings().getSmtpUser(), this.getMailSettings().getSmtpPassword());
+            transport.connect(this.getSmtpSettings().getSmtpHost(), this.getSmtpSettings().getSmtpPort(), this
+                    .getSmtpSettings().getSmtpUser(), this.getSmtpSettings().getSmtpPassword());
 
             transport.sendMessage(message, message.getAllRecipients());
 
+        } catch (final Exception e) {
+            throw new MailToolException("Error while sending the mail.", e);
         } finally {
-            if (transport != null) transport.close();
+            if (transport != null) try {
+                transport.close();
+            } catch (MessagingException e) {
+                // Do nothing
+            }
         }
     }
 
@@ -173,14 +174,14 @@ public class MailTool implements ITool {
 
         final Properties props = new Properties();
         props.setProperty("mail.transport.protocol", SMTP_PROTOCOL);
-        props.setProperty("mail.host", this.getMailSettings().getSmtpHost());
-        props.setProperty("mail.user", this.getMailSettings().getSmtpUser());
-        props.setProperty("mail.password", this.getMailSettings().getSmtpPassword());
-        props.setProperty("mail.smtp.port", String.valueOf(this.getMailSettings().getSmtpPort()));
-        props.setProperty("mail.smtp.auth", String.valueOf(this.getMailSettings().isSmtpAuth()));
-        props.setProperty("mail.smtp.starttls.enable", String.valueOf(this.getMailSettings().isStarttls()));
+        props.setProperty("mail.host", this.getSmtpSettings().getSmtpHost());
+        props.setProperty("mail.user", this.getSmtpSettings().getSmtpUser());
+        props.setProperty("mail.password", this.getSmtpSettings().getSmtpPassword());
+        props.setProperty("mail.smtp.port", String.valueOf(this.getSmtpSettings().getSmtpPort()));
+        props.setProperty("mail.smtp.auth", String.valueOf(this.getSmtpSettings().isSmtpAuth()));
+        props.setProperty("mail.smtp.starttls.enable", String.valueOf(this.getSmtpSettings().isStarttls()));
 
-        final boolean useSSL = this.getMailSettings().isSsl();
+        final boolean useSSL = this.getSmtpSettings().isSsl();
         if (useSSL) {
             props.setProperty("mail.transport.protocol", SMTPS_PROTOCOL);
             props.setProperty("mail.smtp.ssl.enable", String.valueOf(useSSL));
@@ -217,7 +218,7 @@ public class MailTool implements ITool {
      */
     private void addAttachementFilesToMessage(final Multipart multipart) throws MessagingException {
 
-        final List<File> files = this.getAttachements();
+        final List<File> files = this.getMessageSettings().getAttachements();
         if (files == null || files.isEmpty()) {
             return; // Get out ! There is no attachment file ...
         }

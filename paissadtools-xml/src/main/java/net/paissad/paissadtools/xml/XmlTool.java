@@ -13,6 +13,7 @@ import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 
 import net.paissad.paissadtools.api.ITool;
+import net.paissad.paissadtools.xml.exception.XmlToolException;
 
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.InputSource;
@@ -26,7 +27,7 @@ import org.xml.sax.SAXParseException;
  */
 public class XmlTool implements ITool {
 
-    public static void validate(final File xmlFile, final File xsdFile) throws XmlServiceException {
+    public static void validate(final File xmlFile, final File xsdFile) throws XmlToolException {
 
         BufferedInputStream xsdStream = null;
         try {
@@ -42,7 +43,7 @@ public class XmlTool implements ITool {
         } catch (Exception e) {
             final String errMsg = "Error while validating the XML file -> " + xmlFile.getAbsolutePath() + " : "
                     + e.getMessage();
-            throw new XmlServiceException(errMsg, e);
+            throw new XmlToolException(errMsg, e);
 
         } finally {
             if (xsdStream != null) {

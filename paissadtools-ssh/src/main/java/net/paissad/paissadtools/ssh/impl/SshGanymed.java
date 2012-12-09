@@ -5,7 +5,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
 
-import net.paissad.paissadtools.ssh.AbstractSsh;
 import net.paissad.paissadtools.ssh.SshCommand;
 import net.paissad.paissadtools.ssh.SshToolSettings;
 import net.paissad.paissadtools.util.CommonUtils;

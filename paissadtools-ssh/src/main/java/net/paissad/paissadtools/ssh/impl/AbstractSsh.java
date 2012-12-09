@@ -1,8 +1,14 @@
-package net.paissad.paissadtools.ssh;
+package net.paissad.paissadtools.ssh.impl;
 
 import java.io.File;
 import java.io.OutputStream;
 import java.util.List;
+
+import net.paissad.paissadtools.ssh.SshCommand;
+import net.paissad.paissadtools.ssh.SshErrorEvent;
+import net.paissad.paissadtools.ssh.SshErrorListener;
+import net.paissad.paissadtools.ssh.SshTool;
+import net.paissad.paissadtools.ssh.SshToolSettings;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -12,7 +18,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public abstract class AbstractSsh implements SshTool {
+abstract class AbstractSsh implements SshTool {
 
     /** The default home ssh user directory. */
     protected static final File SSH_USER_DIR = new File(System.getProperty("user.home"), ".ssh");

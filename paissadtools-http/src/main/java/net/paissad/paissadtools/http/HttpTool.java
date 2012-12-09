@@ -26,6 +26,7 @@ import javax.net.ssl.X509TrustManager;
 
 import net.paissad.paissadtools.api.ITool;
 import net.paissad.paissadtools.http.HttpToolSettings.ProxySettings;
+import net.paissad.paissadtools.http.exception.HttpToolException;
 import net.paissad.paissadtools.util.CommonUtils;
 
 import org.apache.commons.io.IOUtils;
