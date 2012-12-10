@@ -29,7 +29,6 @@ import net.paissad.paissadtools.http.HttpToolSettings.ProxySettings;
 import net.paissad.paissadtools.http.exception.HttpToolException;
 import net.paissad.paissadtools.util.CommonUtils;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.HttpException;
@@ -586,26 +585,5 @@ public class HttpTool implements ITool {
     }
 
     // _________________________________________________________________________
-
-    /*
-     * XXX For testing purpose only !
-     */
-    public static void main(final String[] args) throws Exception {
-        final HttpTool httpTool = new HttpTool();
-        final File fileToUpload = new File("pom.xml").getAbsoluteFile();
-        final String destUrl = "http://localhost:8080/serverstub/http/upload?simebouchon_exchange=00000&simebouchon_flowid=00000&"
-                + "simebouchon_response_file=pom.xml";
-        final HttpToolResponse response = httpTool.upload(fileToUpload, destUrl, null);
-        System.out.println(IOUtils.toString(response.getResponseBody()));
-        final String dummyUrl = "http://localhost:8080/serverstub/http/dummy.do";
-        httpTool.sendRequest(dummyUrl, Http_Method.DELETE, null);
-        httpTool.sendRequest(dummyUrl, Http_Method.GET, null);
-        httpTool.sendRequest(dummyUrl, Http_Method.HEAD, null);
-        httpTool.sendRequest(dummyUrl, Http_Method.OPTIONS, null);
-        httpTool.sendRequest(dummyUrl, Http_Method.POST, null);
-        httpTool.sendRequest(dummyUrl, Http_Method.PUT, null);
-        httpTool.sendRequest(dummyUrl, Http_Method.TRACE, null);
-        httpTool.abort();
-    }
 
 }

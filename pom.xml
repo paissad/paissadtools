@@ -292,6 +292,7 @@
     <module>paissadtools-utils</module>
     <module>paissadtools-xml</module>
     <module>build-tools</module>
+    <module>paissadtools-svn</module>
   </modules>
 
   <dependencyManagement>
