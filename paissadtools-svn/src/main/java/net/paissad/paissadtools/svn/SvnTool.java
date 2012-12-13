@@ -63,6 +63,10 @@ public class SvnTool implements ITool {
      * It acts as the same as the SVN command line used from the command line
      * interfaces (CLI).
      * </p>
+     * <p>
+     * The returned {@link SvnToolResult} will contain the STDOUT & STDERR
+     * outputs & the exit code status.
+     * </p>
      * 
      * @param args - The arguments to pass to the SVN command line tool.
      * @return The result.
@@ -164,7 +168,7 @@ public class SvnTool implements ITool {
                     while ((bytesRead = in.read(data, 0, data.length)) != -1) {
                         try {
                             if (lock != null) {
-                                while (lock.tryLock(1, TimeUnit.MILLISECONDS)) {
+                                while (!lock.tryLock(1, TimeUnit.MILLISECONDS)) {
                                     // retry lock acquisition
                                 }
                             }
