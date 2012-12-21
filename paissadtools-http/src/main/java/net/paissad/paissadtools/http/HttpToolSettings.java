@@ -15,7 +15,7 @@ import net.paissad.paissadtools.api.IToolSettings;
  * The settings are basically request parameters, headers, credentials and proxy
  * settings.
  * </p>
- * <b>NOTE :</b> If there is no need to use the proxy settings, the the
+ * <b>NOTE :</b> If there is no need to use the proxy settings, then the
  * {@link ProxySettings} attribute must be <code>null</code>.
  * 
  * @author paissad

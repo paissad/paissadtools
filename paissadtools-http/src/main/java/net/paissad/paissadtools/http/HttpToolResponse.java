@@ -6,8 +6,7 @@ import java.io.Serializable;
 import lombok.Getter;
 
 /**
- * Represents the HTTP response of after an operation is finished by the
- * {@link HttpTool}.<br>
+ * Represents the HTTP response of after an operation is finished by the {@link HttpTool}.<br>
  * The instance of this class is immutable.
  * 
  * @author paissad
@@ -25,6 +24,11 @@ public class HttpToolResponse implements Serializable {
         this.statusCode = statusCode;
         this.statusMessage = statusMessage;
         this.responseBody = responseBody;
+    }
+
+    @Override
+    public String toString() {
+        return this.statusCode + this.statusMessage + " [ responseBody=" + this.responseBody + "]";
     }
 
 }

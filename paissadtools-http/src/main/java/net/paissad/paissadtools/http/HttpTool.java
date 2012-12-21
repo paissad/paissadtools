@@ -75,16 +75,14 @@ import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
 
 /**
- * HTTP tool for sending requests (GET, POST, PUT, DELETE, HEAD, OPTIONS, TRACE)
- * or for uploading files (multipart).
+ * HTTP tool for sending requests (GET, POST, PUT, DELETE, HEAD, OPTIONS, TRACE) or for uploading files (multipart).
  * 
  * @author paissad
  */
 public class HttpTool implements ITool {
 
     /*
-     * Code examples available from here :
-     * http://hc.apache.org/httpcomponents-client-ga/examples.html
+     * Code examples available from here : http://hc.apache.org/httpcomponents-client-ga/examples.html
      */
 
     private static final String UTF8_ENCODING = "UTF-8";
@@ -124,15 +122,12 @@ public class HttpTool implements ITool {
      * 
      * @param fileToUpload - The file to upload.
      * @param destUrl - The destination URL where to upload the file.
-     * @param requestSettings - Contains the optional settings
-     *            (username/password if authentication is needed when processing
-     *            the request. Contains additional parameters and/or headers to
-     *            pass to the request Contains also the proxy settings). This
-     *            argument may be <code>null</code> if no optional/additional
-     *            setting is required.
-     * @return The HTTP response of type {@link HttpToolResponse}.
-     * @throws IllegalArgumentException If the file to upload or the specified
-     *             destination URL is <tt>null</tt>.
+     * @param requestSettings - Contains the optional settings (username/password if authentication is needed when
+     *            processing the request. Contains additional parameters and/or headers to pass to the request Contains
+     *            also the proxy settings). This argument may be <code>null</code> if no optional/additional setting is
+     *            required.
+     * @return The HTTP response of type {@link HttpToolResponse}. Is never <code>null</code>.
+     * @throws IllegalArgumentException If the file to upload or the specified destination URL is <tt>null</tt>.
      * @throws HttpToolException - If an error occurs while uploading the file.
      */
     public HttpToolResponse upload(final File fileToUpload, final String destUrl, final HttpToolSettings requestSettings)
@@ -196,17 +191,13 @@ public class HttpTool implements ITool {
      * 
      * @param url - The URL where to send the request.
      * @param method - The HTTP method to use.
-     * @param requestSettings - Contains the optional settings
-     *            (username/password if authentication is needed when processing
-     *            the request. Contains additional parameters and/or headers to
-     *            pass to the request Contains also the proxy settings). This
-     *            argument may be <code>null</code> if no optional/additional
-     *            setting is required.
-     * @return The HTTP response of type {@link HttpToolResponse}.
-     * @throws IllegalArgumentException If the specified url and/or the http
-     *             method to use is <tt>null</tt>
-     * @throws HttpToolException - If an error occurs while processing the HTTP
-     *             request.
+     * @param requestSettings - Contains the optional settings (username/password if authentication is needed when
+     *            processing the request. Contains additional parameters and/or headers to pass to the request. Contains
+     *            also the proxy settings). This argument may be <code>null</code> if no optional/additional setting is
+     *            required.
+     * @return The HTTP response of type {@link HttpToolResponse}. Is never <code>null</code>.
+     * @throws IllegalArgumentException If the specified url and/or the http method to use is <tt>null</tt>
+     * @throws HttpToolException - If an error occurs while processing the HTTP request.
      * @see Http_Method
      */
     public HttpToolResponse sendRequest(final String url, final Http_Method method,
@@ -284,8 +275,7 @@ public class HttpTool implements ITool {
     }
 
     /**
-     * Aborts all current and active requests being processed by this HTTP tool
-     * client.
+     * Aborts all current and active requests being processed by this HTTP tool client.
      */
     public void abort() {
         synchronized (this.currentRequests) {
@@ -316,14 +306,10 @@ public class HttpTool implements ITool {
     /**
      * See the following sites for examples/documentations.
      * <ul>
-     * <li><a href=
-     * "http://hc.apache.org/httpcomponents-client-ga/tutorial/html/connmgmt.html"
-     * >http://hc.apache.org/httpcomponents-client-ga/tutorial/html/connmgmt.
-     * html</a>.</li>
-     * <li><a href=
-     * "http://www.makeurownrules.com/secure-rest-web-service-mobile-application-android.html"
-     * >http://www.makeurownrules.com/secure-rest-web-service-mobile-application
-     * -android.html</a>.</li>
+     * <li><a href= "http://hc.apache.org/httpcomponents-client-ga/tutorial/html/connmgmt.html"
+     * >http://hc.apache.org/httpcomponents-client-ga/tutorial/html/connmgmt. html</a>.</li>
+     * <li><a href= "http://www.makeurownrules.com/secure-rest-web-service-mobile-application-android.html"
+     * >http://www.makeurownrules.com/secure-rest-web-service-mobile-application -android.html</a>.</li>
      * </ul>
      * 
      * @param host - The host where the HTTP client will be connected to.
@@ -426,8 +412,8 @@ public class HttpTool implements ITool {
     }
 
     /**
-     * Computes a <tt>String</tt> representing the concatenation of all the
-     * parameters. The resulted <tt>String</tt> can be appended to an URL.
+     * Computes a <tt>String</tt> representing the concatenation of all the parameters. The resulted <tt>String</tt> can
+     * be appended to an URL.
      * 
      * @param params - The parameters to use.
      * @return A String representing the concatenation of all the parameters.
@@ -483,8 +469,7 @@ public class HttpTool implements ITool {
 
     // http://hc.apache.org/httpcomponents-client-ga/tutorial/html/fundamentals.html#d4e292
     /**
-     * This class contains the policy to use in order to know whether or not a
-     * retry must happen.
+     * This class contains the policy to use in order to know whether or not a retry must happen.
      * 
      * @author paissad
      */

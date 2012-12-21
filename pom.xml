@@ -1,5 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>net.paissad.paissadtools</groupId>
@@ -285,7 +285,9 @@
   <modules>
     <module>paissadtools-api</module>
     <module>paissadtools-compress</module>
+    <module>paissadtools-examples</module>
     <module>paissadtools-ftp</module>
+    <module>paissadtools-geolocation</module>
     <module>paissadtools-http</module>
     <module>paissadtools-mail</module>
     <module>paissadtools-ssh</module>

@@ -1,0 +1,63 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <artifactId>paissadtools</artifactId>
+    <groupId>net.paissad.paissadtools</groupId>
+    <version>0.0.1</version>
+    <relativePath>..</relativePath>
+  </parent>
+  <artifactId>paissadtools-examples</artifactId>
+  <name>PaissadTools Examples</name>
+  <description>Contains lots of code examples for each module of the project.</description>
+
+  <dependencies>
+    <dependency>
+      <groupId>net.paissad.paissadtools</groupId>
+      <artifactId>paissadtools-compress</artifactId>
+      <version>0.0.1</version>
+    </dependency>
+    <dependency>
+      <groupId>net.paissad.paissadtools</groupId>
+      <artifactId>paissadtools-ftp</artifactId>
+      <version>0.0.1</version>
+    </dependency>
+    <dependency>
+      <groupId>net.paissad.paissadtools</groupId>
+      <artifactId>paissadtools-geolocation</artifactId>
+      <version>0.0.1</version>
+    </dependency>
+    <dependency>
+      <groupId>net.paissad.paissadtools</groupId>
+      <artifactId>paissadtools-http</artifactId>
+      <version>0.0.1</version>
+    </dependency>
+    <dependency>
+      <groupId>net.paissad.paissadtools</groupId>
+      <artifactId>paissadtools-mail</artifactId>
+      <version>0.0.1</version>
+    </dependency>
+    <dependency>
+      <groupId>net.paissad.paissadtools</groupId>
+      <artifactId>paissadtools-ssh</artifactId>
+      <version>0.0.1</version>
+    </dependency>
+    <dependency>
+      <groupId>net.paissad.paissadtools</groupId>
+      <artifactId>paissadtools-svn</artifactId>
+      <version>0.0.1</version>
+    </dependency>
+    <dependency>
+      <groupId>net.paissad.paissadtools</groupId>
+      <artifactId>paissadtools-utils</artifactId>
+      <version>0.0.1</version>
+    </dependency>
+    <dependency>
+      <groupId>net.paissad.paissadtools</groupId>
+      <artifactId>paissadtools-xml</artifactId>
+      <version>0.0.1</version>
+    </dependency>
+  </dependencies>
+
+</project>

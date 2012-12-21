@@ -22,6 +22,9 @@ import org.tmatesoft.svn.cli.SVN;
  */
 public class SvnTool implements ITool {
 
+    /** The default exit code '0' which means success. */
+    public static final int      EXIT_CODE_SUCCESS = 0;
+
     private final ProcessBuilder processBuilder;
 
     public SvnTool() {
@@ -32,8 +35,7 @@ public class SvnTool implements ITool {
      * Sets the working directory to use before executing a command.
      * 
      * @param directory - The directory where to change to.
-     * @throws IllegalArgumentException If the specified argument is null or is
-     *             not a directory.
+     * @throws IllegalArgumentException If the specified argument is null or is not a directory.
      * @see #execute(String[])
      */
     public void cd(final File directory) throws IllegalArgumentException {
@@ -44,8 +46,7 @@ public class SvnTool implements ITool {
     }
 
     /**
-     * Returns the current working directory from where this tool will execute
-     * the command.
+     * Returns the current working directory from where this tool will execute the command.
      * 
      * @return The current working directory.
      */
@@ -56,22 +57,18 @@ public class SvnTool implements ITool {
 
     /**
      * <p>
-     * This method is a proxy to the real command line tool served by this class
-     * {@link SVN}.
+     * This method is a proxy to the real command line tool served by this class {@link SVN}.
      * </p>
      * <p>
-     * It acts as the same as the SVN command line used from the command line
-     * interfaces (CLI).
+     * It acts as the same as the SVN command line used from the command line interfaces (CLI).
      * </p>
      * <p>
-     * The returned {@link SvnToolResult} will contain the STDOUT & STDERR
-     * outputs & the exit code status.
+     * The returned {@link SvnToolResult} will contain the STDOUT & STDERR outputs & the exit code status.
      * </p>
      * 
      * @param args - The arguments to pass to the SVN command line tool.
      * @return The result.
-     * @throws IllegalArgumentException If the specified argument is
-     *             <code>null</code>.
+     * @throws IllegalArgumentException If the specified argument is <code>null</code>.
      * @throws SVNToolException If an error while executing the SVN command.
      * @see #execute(String[], OutputStream, OutputStream)
      */
@@ -92,23 +89,18 @@ public class SvnTool implements ITool {
 
     /**
      * <p>
-     * This method is a proxy to the real command line tool served by this class
-     * {@link SVN}.
+     * This method is a proxy to the real command line tool served by this class {@link SVN}.
      * </p>
      * <p>
-     * It acts as the same as the SVN command line used from the command line
-     * interfaces (CLI).
+     * It acts as the same as the SVN command line used from the command line interfaces (CLI).
      * </p>
      * 
      * @param args - The arguments to pass to the SVN command line tool.
      * @param stdout - Where to send the STDOUT result. May be <tt>null</tt>.
      * @param stderr - Where to send the STDERR result. May be <tt>null</tt>.
-     * @return The exit code. <span style='color:orange'><b>NOTE : </b></span>By
-     *         convention, an exit code of '0' means that the command exited
-     *         successfully. But it is not entirely guaranteed this will be
-     *         always the case.
-     * @throws IllegalArgumentException If the specified argument is
-     *             <code>null</code>.
+     * @return The exit code. <span style='color:orange'><b>NOTE : </b></span>By convention, an exit code of '0' means
+     *         that the command exited successfully. But it is not entirely guaranteed this will be always the case.
+     * @throws IllegalArgumentException If the specified argument is <code>null</code>.
      * @throws SVNToolException If an error while executing the SVN command.
      * @see #execute(String[])
      */
@@ -151,10 +143,9 @@ public class SvnTool implements ITool {
      * 
      * @param in
      * @param out
-     * @param lock - If not null, the lock will be used to prevent concurrent
-     *            write on the OutputStream. If for example, the STDERR & STDOUT
-     *            are served by the same OutputStream, it is by far wiser to
-     *            make the writing operation quite fair.
+     * @param lock - If not null, the lock will be used to prevent concurrent write on the OutputStream. If for example,
+     *            the STDERR & STDOUT are served by the same OutputStream, it is by far wiser to make the writing
+     *            operation quite fair.
      */
     private void copyStreamAsync(final InputStream in, final OutputStream out, final Lock lock) {
         if (in == null || out == null) return;
