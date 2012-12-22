@@ -18,6 +18,11 @@ import com.maxmind.geoip.LookupService;
  */
 public class GeoTool implements ITool {
 
+    /*
+     * TODO: add the possibility to choose between memory or disk when loading the database file. Add the possibility to
+     * use multiple database types.
+     */
+
     /**
      * Process a IP address lookup. Works for IPV4 & IPV6 addresses.
      * 
