@@ -8,4 +8,5 @@
   <suppress files="src/test/.+\.java$" checks="[a-zA-Z0-9]*" />
   <suppress files=".*Test\.java$" checks="[a-zA-Z0-9]*" />
   <suppress files=".*Example\.java$" checks="[a-zA-Z0-9]*" />
+  <suppress files=".*\.dat$" checks="[a-zA-Z0-9]*" />
 </suppressions>

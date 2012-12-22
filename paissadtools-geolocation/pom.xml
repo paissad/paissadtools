@@ -9,7 +9,7 @@
     <version>0.0.1</version>
   </parent>
   <artifactId>paissadtools-geolocation</artifactId>
-  <name>PaissadTools Geolocation</name>
+  <name>PaissadTools-Geolocation</name>
 
   <dependencies>
     <dependency>
