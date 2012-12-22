@@ -19,16 +19,20 @@ public class MailToolSMTPSettings implements IToolSettings {
     private String            smtpUser;
     private String            smtpPassword;
     private String            smtpHost;
-    private int               smtpPort;
-    private boolean           smtpAuth;
-    private boolean           starttls;
+    private String            smtpPort;
+    private boolean           auth;
+    private boolean           startTLS;
     private boolean           ssl;
-    /** If set to true, then receive an acknowledgment after sending the mail. */
-    private boolean           autoAcknowledge;
 
     public MailToolSMTPSettings() {
-        // By default, do not ask for an acknowledgment when sending a mail.
-        this.autoAcknowledge = false;
+        this(null, null, null, null);
     }
 
+    public MailToolSMTPSettings(final String smtpUser, final String smtpPassword, final String smtpHost,
+            final String smtpPort) {
+        this.smtpUser = smtpUser;
+        this.smtpPassword = smtpPassword;
+        this.smtpHost = smtpHost;
+        this.smtpPort = smtpPort;
+    }
 }

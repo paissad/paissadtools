@@ -9,7 +9,7 @@
     <relativePath>..</relativePath>
   </parent>
   <artifactId>paissadtools-examples</artifactId>
-  <name>PaissadTools Examples</name>
+  <name>PaissadTools-Examples</name>
   <description>Contains lots of code examples for each module of the project.</description>
 
   <dependencies>

@@ -9,6 +9,7 @@
     <relativePath>..</relativePath>
   </parent>
   <artifactId>paissadtools-mail</artifactId>
+  <name>PaissadTools-Mail</name>
   <description>Contains utilities related to mail.</description>
 
   <dependencies>
@@ -34,5 +35,4 @@
     </dependency>
   </dependencies>
 
-  <name>PaissadTools-Mail</name>
 </project>
