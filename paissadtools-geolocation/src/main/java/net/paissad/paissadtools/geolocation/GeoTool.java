@@ -71,7 +71,7 @@ public class GeoTool implements ITool {
 
             final GeoToolResultImpl result = new GeoToolResultImpl();
 
-            if (databaseType == DatabaseInfo.COUNTRY_EDITION || databaseType == DatabaseInfo.COUNTRY_EDITION_V6) {
+            if (databaseType == DatabaseInfo.COUNTRY_EDITION) {
                 // GeoIP.dat
                 final Country country = (isIPV6) ? lookupService.getCountryV6(ipAddress) : lookupService
                         .getCountry(ipAddress);
