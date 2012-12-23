@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>net.paissad.paissadtools</groupId>
@@ -11,7 +12,7 @@
 
   <licenses>
     <license>
-      <name>Eclipse Public License - v 1.0</name>
+      <name>Eclipse Public License - version 1.0</name>
       <url>http://www.eclipse.org/legal/epl-v10.html</url>
       <distribution>manual</distribution>
     </license>
@@ -60,6 +61,14 @@
             <target>${compiler.source.version}</target>
             <showDeprecation>true</showDeprecation>
             <optimize>true</optimize>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-jar-plugin</artifactId>
+          <version>2.4</version>
+          <configuration>
+            <skipIfEmpty>true</skipIfEmpty>
           </configuration>
         </plugin>
         <plugin>
@@ -283,6 +292,7 @@
   </reporting>
 
   <modules>
+    <module>build-tools</module>
     <module>paissadtools-api</module>
     <module>paissadtools-compress</module>
     <module>paissadtools-examples</module>
@@ -291,10 +301,9 @@
     <module>paissadtools-http</module>
     <module>paissadtools-mail</module>
     <module>paissadtools-ssh</module>
+    <module>paissadtools-svn</module>
     <module>paissadtools-utils</module>
     <module>paissadtools-xml</module>
-    <module>build-tools</module>
-    <module>paissadtools-svn</module>
   </modules>
 
   <dependencyManagement>

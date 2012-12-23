@@ -1,6 +1,7 @@
 package net.paissad.paissadtools.http.exception;
 
 import net.paissad.paissadtools.api.ITool;
+import net.paissad.paissadtools.api.IToolException;
 import net.paissad.paissadtools.http.HttpTool;
 
 /**
@@ -8,7 +9,7 @@ import net.paissad.paissadtools.http.HttpTool;
  * 
  * @author paissad
  */
-public class HttpToolException extends Exception {
+public class HttpToolException extends IToolException {
 
     private static final long serialVersionUID = 1L;
 

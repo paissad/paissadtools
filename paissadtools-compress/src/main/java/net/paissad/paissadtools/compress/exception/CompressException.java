@@ -1,11 +1,13 @@
 package net.paissad.paissadtools.compress.exception;
 
+import net.paissad.paissadtools.api.IToolException;
+
 /**
  * This exception is thrown by the compression tool.
  * 
  * @author paissad
  */
-public class CompressException extends Exception {
+public class CompressException extends IToolException {
 
     private static final long serialVersionUID = 1L;
 

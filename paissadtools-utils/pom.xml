@@ -9,6 +9,7 @@
     <relativePath>..</relativePath>
   </parent>
   <artifactId>paissadtools-utils</artifactId>
+  <name>PaissadTools-Utils</name>
   <description>Contains common utilities that may be used in many other modules or projects.</description>
 
   <dependencies>
@@ -18,5 +19,5 @@
       <version>2.4</version>
     </dependency>
   </dependencies>
-  <name>PaissadTools-Utils</name>
+
 </project>

@@ -1,6 +1,7 @@
 package net.paissad.paissadtools.geolocation.exception;
 
 import net.paissad.paissadtools.api.ITool;
+import net.paissad.paissadtools.api.IToolException;
 import net.paissad.paissadtools.geolocation.GeoTool;
 
 /**
@@ -8,7 +9,7 @@ import net.paissad.paissadtools.geolocation.GeoTool;
  * 
  * @author paissad
  */
-public class GeoToolException extends Exception {
+public class GeoToolException extends IToolException {
 
     private static final long serialVersionUID = 1L;
 

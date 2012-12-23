@@ -10,6 +10,7 @@
   </parent>
   <artifactId>paissadtools-geolocation</artifactId>
   <name>PaissadTools-Geolocation</name>
+  <description>Contains some utilities to process IP address lookup/geolocation by using the underlying GeoIP API.</description>
 
   <dependencies>
     <dependency>
@@ -25,6 +26,7 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 

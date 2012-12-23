@@ -29,7 +29,7 @@ public class GeoToolTest {
     @Test(expected = IllegalArgumentException.class)
     public final void testLookup_Blank_IPAddress() throws IllegalArgumentException, GeoToolException {
         final GeoTool geoTool = new GeoTool();
-        geoTool.lookup(null, NON_EXISTENT_FILE);
+        geoTool.lookup("  \t \n", NON_EXISTENT_FILE);
     }
 
     @Test(expected = GeoToolException.class)

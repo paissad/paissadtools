@@ -1,6 +1,7 @@
 package net.paissad.paissadtools.mail.exception;
 
 import net.paissad.paissadtools.api.ITool;
+import net.paissad.paissadtools.api.IToolException;
 import net.paissad.paissadtools.mail.MailTool;
 
 /**
@@ -8,7 +9,7 @@ import net.paissad.paissadtools.mail.MailTool;
  * 
  * @author paissad
  */
-public class MailToolException extends Exception {
+public class MailToolException extends IToolException {
 
     private static final long serialVersionUID = 1L;
 

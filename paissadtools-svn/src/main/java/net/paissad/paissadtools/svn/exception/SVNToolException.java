@@ -1,6 +1,7 @@
 package net.paissad.paissadtools.svn.exception;
 
 import net.paissad.paissadtools.api.ITool;
+import net.paissad.paissadtools.api.IToolException;
 import net.paissad.paissadtools.svn.SvnTool;
 
 /**
@@ -8,7 +9,7 @@ import net.paissad.paissadtools.svn.SvnTool;
  * 
  * @author paissad
  */
-public class SVNToolException extends Exception {
+public class SVNToolException extends IToolException {
 
     private static final long serialVersionUID = 1L;
 

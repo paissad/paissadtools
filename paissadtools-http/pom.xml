@@ -9,6 +9,7 @@
     <relativePath>..</relativePath>
   </parent>
   <artifactId>paissadtools-http</artifactId>
+  <name>PaissadTools-Http</name>
   <description>Contains utilities relative to HTTP.</description>
 
   <dependencies>
@@ -37,7 +38,11 @@
       <artifactId>lombok</artifactId>
       <optional>false</optional>
     </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
-  <name>PaissadTools-Http</name>
 </project>

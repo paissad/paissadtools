@@ -1,6 +1,7 @@
 package net.paissad.paissadtools.xml.exception;
 
 import net.paissad.paissadtools.api.ITool;
+import net.paissad.paissadtools.api.IToolException;
 import net.paissad.paissadtools.xml.XmlTool;
 
 /**
@@ -8,7 +9,7 @@ import net.paissad.paissadtools.xml.XmlTool;
  * 
  * @author paissad
  */
-public class XmlToolException extends Exception {
+public class XmlToolException extends IToolException {
 
     private static final long serialVersionUID = 1L;
 
