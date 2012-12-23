@@ -12,8 +12,8 @@ class GeoToolResultImpl implements GeoToolResult {
     private String countryCode;
     private String city;
     private String postalCode;
-    private double latitude;
-    private double longitude;
+    private Double latitude;
+    private Double longitude;
 
     GeoToolResultImpl() {
     }
@@ -44,12 +44,12 @@ class GeoToolResultImpl implements GeoToolResult {
     }
 
     @Override
-    public double getLatitude() {
+    public Double getLatitude() {
         return this.latitude;
     }
 
     @Override
-    public double getLongitude() {
+    public Double getLongitude() {
         return this.longitude;
     }
 
@@ -73,11 +73,11 @@ class GeoToolResultImpl implements GeoToolResult {
         this.postalCode = postalCode;
     }
 
-    public void setLatitude(final double latitude) {
+    public void setLatitude(final Double latitude) {
         this.latitude = latitude;
     }
 
-    public void setLongitude(final double longitude) {
+    public void setLongitude(final Double longitude) {
         this.longitude = longitude;
     }
 
@@ -90,4 +90,5 @@ class GeoToolResultImpl implements GeoToolResult {
                 .append(", longitude=").append(this.longitude).append("]");
         return sb.toString();
     }
+
 }

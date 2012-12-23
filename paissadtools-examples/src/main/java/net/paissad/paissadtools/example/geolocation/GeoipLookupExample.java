@@ -15,9 +15,9 @@ public class GeoipLookupExample {
 
     public static void main(final String[] args) throws GeoToolException {
 
-        final File databaseFile = new File("src/main/resources/geolocation/GeoliteCity.dat");
+        final File databaseFile = new File("../paissadtools-geolocation/src/test/resources/GeoliteCity.dat");
 
-        final GeoToolResult ipv4Result = new GeoTool().lookup("74.125.230.192", databaseFile);
+        final GeoToolResult ipv4Result = new GeoTool().lookup("98.138.253.109", databaseFile, true);
         System.out.println(ipv4Result);
 
         final GeoToolResult ipv6Result = new GeoTool().lookup("2a00:1450:4007:801::1006", databaseFile);

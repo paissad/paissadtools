@@ -17,7 +17,7 @@ public interface GeoToolResult {
 
     String getPostalCode();
 
-    double getLatitude();
+    Double getLatitude();
 
-    double getLongitude();
+    Double getLongitude();
 }
