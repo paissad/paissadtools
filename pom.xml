@@ -295,6 +295,7 @@
     <module>build-tools</module>
     <module>paissadtools-api</module>
     <module>paissadtools-compress</module>
+    <module>paissadtools-diff</module>
     <module>paissadtools-examples</module>
     <module>paissadtools-ftp</module>
     <module>paissadtools-geolocation</module>
@@ -324,6 +325,11 @@
         <artifactId>slf4j-api</artifactId>
         <version>1.7.2</version>
         <optional>true</optional>
+      </dependency>
+      <dependency>
+        <groupId>commons-io</groupId>
+        <artifactId>commons-io</artifactId>
+        <version>2.4</version>
       </dependency>
     </dependencies>
   </dependencyManagement>

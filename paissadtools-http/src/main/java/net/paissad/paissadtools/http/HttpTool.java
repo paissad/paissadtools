@@ -2,6 +2,7 @@ package net.paissad.paissadtools.http;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,7 +28,6 @@ import javax.net.ssl.X509TrustManager;
 import net.paissad.paissadtools.api.ITool;
 import net.paissad.paissadtools.http.HttpToolSettings.ProxySettings;
 import net.paissad.paissadtools.http.exception.HttpToolException;
-import net.paissad.paissadtools.util.CommonUtils;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpEntityEnclosingRequest;
@@ -459,10 +459,21 @@ public class HttpTool implements ITool {
                 }
             } finally {
                 EntityUtils.consume(respEntity);
-                CommonUtils.closeAllStreamsQuietly(baos, respContent);
+                this.closeAllStreamsQuietly(baos, respContent);
             }
         }
         return null;
+    }
+
+    private void closeAllStreamsQuietly(final Closeable... closeables) {
+        for (final Closeable closeable : closeables) {
+            if (closeable != null) {
+                try {
+                    closeable.close();
+                } catch (IOException e) { // do nothing
+                }
+            }
+        }
     }
 
     // _________________________________________________________________________
