@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<root>
+  <title>
+    My First XML Document
+  </title>
+  <para>
+    Hello to the wild and wooly world of electronic_2
+    document encoding.  
+  </para>
+  <note>
+    (Okay, so maybe it's not that wild,
+    but it can get pretty wooly.)
+  </note>
+<!-- No simple "Hello World" here -->
+  <para>
+    This page written by: 
+    <ital>(insert your name here)</ital>
+  </para>
+  <para>
+    Copyright 2000 and beyond
+  </para>
+</root>

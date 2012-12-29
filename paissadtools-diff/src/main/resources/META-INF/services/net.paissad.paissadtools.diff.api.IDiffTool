@@ -1,0 +1,3 @@
+net.paissad.paissadtools.diff.impl.file.FileDiffTool
+net.paissad.paissadtools.diff.impl.properties.PropertiesDiffTool
+net.paissad.paissadtools.diff.impl.xml.XmlDiffTool
