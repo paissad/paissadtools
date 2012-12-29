@@ -12,4 +12,11 @@
   <description>Contains some interfaces that can be implemented by other modules relative to the project or for other projects.</description>
 
   <name>PaissadTools-API</name>
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
 </project>

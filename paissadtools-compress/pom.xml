@@ -9,6 +9,7 @@
     <relativePath>..</relativePath>
   </parent>
   <artifactId>paissadtools-compress</artifactId>
+  <name>PaissadTools-Compress</name>
   <description>Contains tools that help for to compress and/or uncompressing resources in many formats (zip, tar, gz, bz2, ...)</description>
 
   <dependencies>
@@ -32,7 +33,11 @@
       <artifactId>junit</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>ant</groupId>
+      <artifactId>ant</artifactId>
+      <version>1.7.0</version>
+    </dependency>
   </dependencies>
 
-  <name>PaissadTools-Compress</name>
 </project>
