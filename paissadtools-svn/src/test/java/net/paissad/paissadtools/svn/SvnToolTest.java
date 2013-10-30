@@ -56,7 +56,8 @@ public class SvnToolTest {
     @Test
     public final void testExecuteStringArray() throws IllegalArgumentException, SVNToolException {
         final SvnTool svnTool = new SvnTool();
-        final SvnToolResult result = svnTool.execute(new String[] { "log", "https://svn.paissad.net/misc/stuffs" });
+        final SvnToolResult result = svnTool.execute(new String[] { "log",
+                "http://svn.apache.org/repos/asf/subversion/trunk/tools/hook-scripts" });
         Assert.assertEquals(0, result.getExitCode());
     }
 
@@ -69,8 +70,8 @@ public class SvnToolTest {
     public final void testExecuteStringArrayOutputStreamOutputStream() throws IllegalArgumentException,
             SVNToolException {
         final SvnTool svnTool = new SvnTool();
-        final int exitCode = svnTool.execute(new String[] { "log", "https://svn.paissad.net/misc/stuffs" }, System.out,
-                System.out);
+        final int exitCode = svnTool.execute(new String[] { "log",
+                "http://svn.apache.org/repos/asf/subversion/trunk/tools/hook-scripts" }, System.out, System.out);
         Assert.assertEquals(0, exitCode);
     }
 
