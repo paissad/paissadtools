@@ -79,6 +79,8 @@ public class SvnTool implements ITool {
             final List<String> command = this.buildCommand(args);
             this.processBuilder.command(command);
             final Process process = this.processBuilder.start();
+            this.copyStreamAsync(process.getInputStream(), new NullOutputStream(), null);
+            this.copyStreamAsync(process.getErrorStream(), new NullOutputStream(), null);
             final int exitCode = process.waitFor();
             return new SvnToolResult(exitCode, process.getInputStream(), process.getErrorStream());
 
@@ -149,6 +151,10 @@ public class SvnTool implements ITool {
      */
     private void copyStreamAsync(final InputStream in, final OutputStream out, final Lock lock) {
         if (in == null || out == null) return;
+        @SuppressWarnings("resource")
+        final InputStream stdin = (in != null) ? in : new NullInputStream();
+        @SuppressWarnings("resource")
+        final OutputStream stdout = (out != null) ? out : new NullOutputStream();
         new Thread(new Runnable() {
 
             @Override
@@ -156,14 +162,14 @@ public class SvnTool implements ITool {
                 final byte data[] = new byte[8192];
                 int bytesRead;
                 try {
-                    while ((bytesRead = in.read(data, 0, data.length)) != -1) {
+                    while ((bytesRead = stdin.read(data, 0, data.length)) != -1) {
                         try {
                             if (lock != null) {
                                 while (!lock.tryLock(1, TimeUnit.MILLISECONDS)) {
                                     // retry lock acquisition
                                 }
                             }
-                            out.write(data, 0, bytesRead);
+                            stdout.write(data, 0, bytesRead);
                         } finally {
                             if (lock != null) lock.unlock();
                         }
@@ -171,9 +177,34 @@ public class SvnTool implements ITool {
                     out.flush();
                 } catch (IOException e) { // do nothing
                 } catch (InterruptedException e) { // do nothing
+                } finally {
+                    try {
+                        stdin.close();
+                    } catch (IOException e) { // do nothing
+                    }
+                    try {
+                        stdout.close();
+                    } catch (IOException e) { // do nothing
+                    }
                 }
             }
         }).start();
+    }
+
+    private class NullInputStream extends InputStream {
+
+        @Override
+        public int read() throws IOException {
+            return 0;
+        }
+    }
+
+    private class NullOutputStream extends OutputStream {
+
+        @Override
+        public void write(int b) throws IOException {
+            // do nothing
+        }
     }
 
 }

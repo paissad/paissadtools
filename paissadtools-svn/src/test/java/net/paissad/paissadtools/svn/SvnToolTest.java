@@ -54,7 +54,7 @@ public class SvnToolTest {
     }
 
     @Test
-    public final void testExecuteStringArray() throws IllegalArgumentException, SVNToolException {
+    public final void testExecute() throws IllegalArgumentException, SVNToolException {
         final SvnTool svnTool = new SvnTool();
         final SvnToolResult result = svnTool.execute(new String[] { "log",
                 "http://svn.apache.org/repos/asf/subversion/trunk/tools/hook-scripts" });
@@ -62,13 +62,17 @@ public class SvnToolTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public final void testExecuteStringArray_ArgsMustNotBeNull() throws IllegalArgumentException, SVNToolException {
+    public final void testExecute_Args_Must_Not_Be_Null() throws IllegalArgumentException, SVNToolException {
         new SvnTool().execute(null);
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public final void testExecute_Args_Must_Not_Be_Null_2() throws IllegalArgumentException, SVNToolException {
+        new SvnTool().execute(null, null, null);
+    }
+
     @Test
-    public final void testExecuteStringArrayOutputStreamOutputStream() throws IllegalArgumentException,
-            SVNToolException {
+    public final void testExecute_stdout_stdout() throws IllegalArgumentException, SVNToolException {
         final SvnTool svnTool = new SvnTool();
         final int exitCode = svnTool.execute(new String[] { "log",
                 "http://svn.apache.org/repos/asf/subversion/trunk/tools/hook-scripts" }, System.out, System.out);
@@ -76,8 +80,7 @@ public class SvnToolTest {
     }
 
     @Test
-    public final void testExecuteStringArrayOutputStreamOutputStream_BadCommand_AndStdoutNull()
-            throws IllegalArgumentException, SVNToolException {
+    public final void testExecute_Bad_Command_And_Null_Stdout() throws IllegalArgumentException, SVNToolException {
         final SvnTool svnTool = new SvnTool();
         final int exitCode = svnTool.execute(new String[] { "log", "wtf://svn.paissad.net/misc/stuffs" }, null,
                 System.err);
@@ -85,18 +88,11 @@ public class SvnToolTest {
     }
 
     @Test
-    public final void testExecuteStringArrayOutputStreamOutputStream_BadCommand_AndStderrNull()
-            throws IllegalArgumentException, SVNToolException {
+    public final void testExecute_Bad_Command_And_Null_Stderr() throws IllegalArgumentException, SVNToolException {
         final SvnTool svnTool = new SvnTool();
         final int exitCode = svnTool.execute(new String[] { "log", "wtf://svn.paissad.net/misc/stuffs" }, System.out,
                 null);
         Assert.assertNotEquals(0, exitCode);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public final void testExecuteStringArrayOutputStreamOutputStream_ArgsMustNotBeNull()
-            throws IllegalArgumentException, SVNToolException {
-        new SvnTool().execute(null, null, null);
     }
 
 }
