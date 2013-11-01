@@ -9,6 +9,8 @@
   <packaging>pom</packaging>
   <name>PaissadTools</name>
   <url>http://paissad.github.com/paissadtools</url>
+  <description>Paissad Java tools project</description>
+  
 
   <licenses>
     <license>
@@ -25,7 +27,7 @@
       <id>paissad</id>
       <email>paissad@gmail.com</email>
       <roles>
-        <role>Developer</role>
+        <role>Project Leader</role>
       </roles>
     </developer>
   </developers>
@@ -46,7 +48,7 @@
     <compiler.source.version>1.6</compiler.source.version>
     <source.code.lineLength>120</source.code.lineLength>
     <maven.javadoc.plugin.version>2.9</maven.javadoc.plugin.version>
-    <maven.jacoco.plugin.version>0.6.0.201210061924</maven.jacoco.plugin.version>
+    <maven.jacoco.plugin.version>0.6.3.201306030806</maven.jacoco.plugin.version>
     <maven.taglist.plugin.version>2.4</maven.taglist.plugin.version>
   </properties>
 
@@ -87,7 +89,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-source-plugin</artifactId>
-          <version>2.1.2</version>
+          <version>2.2.1</version>
         </plugin>
         <plugin>
           <groupId>org.jacoco</groupId>
@@ -278,11 +280,11 @@
           </reportSet>
         </reportSets>
       </plugin>
-      <!-- <plugin> -->
-      <!-- <groupId>org.apache.maven.plugins</groupId> -->
-      <!-- <artifactId>maven-javadoc-plugin</artifactId> -->
-      <!-- <version>${maven.javadoc.plugin.version}</version> -->
-      <!-- </plugin> -->
+      <plugin>
+      <groupId>org.apache.maven.plugins</groupId>
+      <artifactId>maven-javadoc-plugin</artifactId>
+      <version>${maven.javadoc.plugin.version}</version>
+      </plugin>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>taglist-maven-plugin</artifactId>
